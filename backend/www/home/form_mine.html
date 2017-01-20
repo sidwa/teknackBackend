@@ -1,0 +1,23 @@
+<html>
+	<body>
+		<h1>YOOOO</h1>
+        <form>  
+		    <input type="text" name="username" id="username">
+            <input type="password" name="password" id="password">
+            <input type="button" id="bingo" value="gimme">
+            <input type="button" id="slots" value="gimme">
+            <input type="button" id="roulette" value="gimme">
+        </form>
+		<div id="out"></div>
+	<script>
+        document.getElementById("bingo").onclick=function(){
+            window.location="/game/index.html?game_id=1"
+        }
+        document.getElementById("slots").onclick=function(){
+            window.location="/game/index.html?game_id=2"
+        document.getElementById("roulette").onclick=function(){
+            window.location="/game/index.html?game_id=3"
+        }
+    </script>
+	</body>
+</html>
