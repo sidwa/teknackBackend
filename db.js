@@ -4,7 +4,7 @@ var assert=require("assert");
 
 var url="mongodb://localhost:27017/tek";
 
-function getUser(un,pass,func){
+function getUser(un,pass,func){     //use this for login
     MongoClient.connect(url,function(err,db){
         assert.equal(null,err);
         var result=[]
@@ -17,7 +17,13 @@ function getUser(un,pass,func){
         func(result)
     });
 }
+// usage
+// getUser("babe","babe",function(res){
+//     console.log(res);
+// })
 
-getUser("babe","babe",function(res){
-    console.log(res);
-})
+function InsertUser(tek,un,pass,func){
+
+}
+
+module.exports.login=getUser;
