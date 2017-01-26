@@ -3,6 +3,8 @@ var app=express();
 bodyparser=require("body-parser");
 session=require("client-sessions");
 
+
+var db=require("./db.js")
 // app.get("/",function(req,res){
 //     res.sendFile(__dirname+"/www/index.html");
 //     //res.sendFile(__dirname+"/www/index.js");
@@ -35,17 +37,36 @@ app.use("/home/", function (req, res, next) {   //check if session started
 app.use("/",express.static(__dirname+"/www"));
 
 app.post("/register",function(req,res){
-    if(username.indexOf(req.body.username)==-1){
-        username.push(req.body.username);
-        console.log(username);
-        res.send("registered!")
-    }else{
-        res.send("taken!!")
-    }
-    res.end();
+    req.body.tek=req.body.register_code;
+	delete req.body.register_code;
+	db.register(req.body,function(result){
+		console.log("result:"+result);
+		switch(result){
+			case -1:res.send("passwords don't match");
+				break;
+			case 0:res.send("username taken");
+				break;
+			case 1:res.send("/login.html");
+				break;
+			case 2:res.send("registration code taken or invalid");
+				break;
+			//default:res.send("err"); 
+		}
+		res.end();
+	});
 });
 
-
+app.post("/login",function(req,res){
+	console.dir(req.body);
+    db.login(req.body.username,req.body.password,function(result){
+		if(result==1){
+			res.send("/home/");
+		}else{
+			res.send("login failed");
+		}
+		res.end();
+	});
+});
 
 app.listen(80,function(){
     console.log("server running");

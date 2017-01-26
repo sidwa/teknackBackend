@@ -2,7 +2,14 @@
 	<body>
 		<h1>YOOOO</h1>
         <form>  
-		    <input type="text" name="username" id="username">
+			<input type="text" id="register_code" placeholder="registration_code"><br>
+			<input type="text" id="username" placeholder="username"><br>
+			<input type="password" id="password" placeholder="set password"><bR>
+			<input type="password" id="cpassword" placeholder="confirm password"><br>
+			<input type="text" id="fn" placeholder="first name"><br>
+			<input type="text" id="ln" placeholder="last name"><br>
+			<input type="text" id="email" placeholder="email"><br>
+			<input type="text" id="contact" placeholder="contact"><br>
             <input type="button" id="submit" value="gimme">
         </form>
 		<div id="out"></div>
@@ -16,6 +23,17 @@
 			if(ajx.readyState==4 || ajx.readyState==0){
 				var obj=new Object();
 				obj.username=document.getElementById("username").value;
+				obj.password=document.getElementById("password").value;
+				obj.cpassword=document.getElementById("cpassword").value;
+				if(obj.cpassword!=obj.password){
+					document.getElementById("out").innerHTML="password naaa match";
+					return;
+				}
+				obj.fn=document.getElementById("fn").value;
+				obj.ln=document.getElementById("ln").value;
+				obj.email=document.getElementById("email").value;
+				obj.contact=document.getElementById("contact").value;
+				obj.register_code=document.getElementById("register_code").value;
 				ajx.open("POST","/register",true);
 				ajx.onreadystatechange=serverResponse;
 				ajx.setRequestHeader("Content-type", "application/json");
