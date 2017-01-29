@@ -4,7 +4,7 @@ var hash=require("password-hash");
 
 var url="mongodb://localhost:27017/tek";
 
-function getUserById(un,func){      //tells if username is taken
+function unTaken(un,func){      //tells if username is taken
     MongoClient.connect(url,function(err,db){
         assert.equal(null,err);
         var result=1;   //username not taken set as default
@@ -20,12 +20,38 @@ function getUserById(un,func){      //tells if username is taken
     });
 }
 
-function login(un,pass,func){     //use this for login, returns entire user data
+function getUserById(un,func){
     MongoClient.connect(url,function(err,db){
         assert.equal(null,err);
 
         db.collection("user").find({"username":un}).toArray(function(err,doc){
-            console.dir(doc);
+            db.close();
+            if(doc.length>0){
+                func(doc[0]);
+            }else{
+                func(0);
+            }
+                
+        });
+    });
+}
+
+function getUserQuestion(un,func){
+    getUserById(un,function(result){
+        if(result!=0){
+            func(result.q);
+        }else{
+            func(0);
+        }
+    });
+}
+
+function login(un,pass,func){     //use this for login
+    MongoClient.connect(url,function(err,db){
+        assert.equal(null,err);
+
+        db.collection("user").find({"username":un}).toArray(function(err,doc){
+            console.dir("verifying user for login"+doc);
             if(doc.length==1){
                 if(hash.verify(pass,doc[0].password)){
                     func(1);
@@ -86,30 +112,57 @@ function insertUser(user,func){
     });
 }
 
-function updateUser(user,func){
+function updateUser(user,func){ //updates user from username
     MongoClient.connect(url,function(err,db){
         assert.equal(null,err);
-        var tek=user.tek;
-        delete user.tek;
-        var res= db.collection("user").update({"tek":tek},{$set:user});
+        var un=user.username;
+        delete user.username;
+        db.collection("user").update({"username":un},{$set:user},function(res){
+            func(1); // update successfull
+            db.close();
+        });
         //console.log(res);
-        db.close();
-        func(1); // update successfull
     });
+}
+
+function resetPass(user,func){    
+        getUserById(user.username,function(result){
+            if(hash.verify(user.a,result.a)){  //correct security question's answer
+                delete user.a;
+                user.password=hash.generate(user.password);
+                updateUser(user,function(result1){
+                    if(result1==1){
+                        func(1); // successfully reset password
+                    }
+                });
+            }else{
+                func(0); //the asnwer is not correct
+            }
+        });
 }
 
 
 //testing for registration    
-// var user=new Object();
+//var user=new Object();
 // var tek="ASAHTG";
 // user.tek=tek;
-// user.username="sidwa";
-// user.password="babe";
-// user.cpassword="babe";
+//user.username="sidwa";
+//user.password=hash.generate("babe");
+// user.cpassword=null;
+// user.q="teri maa ka?";
+//user.a="sakinake";
 // user.fn="sid";
 // user.ln="red";
 // user.email="sidwa@fmail.com";
 // user.contact="91841081085";
+
+// resetPass(user,function(res){
+//     if(res==1){
+//         console.log("password reset");
+//     }else{
+//         console.log("password not reset");
+//     }
+// });
 // insertUser(user,function(res){
 //     if(res==1){ 
 //         console.log("user registered yeeeee");
@@ -141,5 +194,7 @@ function updateUser(user,func){
 
 
 module.exports.login=login;
-module.exports.unTaken=getUserById;
-module.exports.register=insertUser
+module.exports.unTaken=unTaken;
+module.exports.getUserQuestion=getUserQuestion;
+module.exports.register=insertUser;
+module.exports.resetPass=resetPass;

@@ -10,7 +10,7 @@ var db=require("./db.js")
 //     //res.sendFile(__dirname+"/www/index.js");
 //     console.log("sent js");
 // });
-app.use("/",express.static(__dirname+"/www"));
+
 
 var username=[];
 
@@ -24,17 +24,18 @@ app.use(session({                //
 	activeDuration: 5 * 60 * 1000 //5 min active session
 }));
 
-app.use("/home/", function (req, res, next) {   //check if session started
-	console.log("requesting home");
+app.use("/home", function (req, res, next) {   //check if session started
 	if (!req.sess.username) {
+		console.log("redirecting cookie not found");
 		res.redirect("/index.html");
-		next();
+		//next();
 	} else {
 		next();
 	}
 });
 
 app.use("/",express.static(__dirname+"/www"));
+
 
 app.post("/register",function(req,res){
     req.body.tek=req.body.register_code;
@@ -46,7 +47,7 @@ app.post("/register",function(req,res){
 				break;
 			case 0:res.send("username taken");
 				break;
-			case 1:res.send("/login.html");
+			case 1:res.send({"path":"/login.html"});
 				break;
 			case 2:res.send("registration code taken or invalid");
 				break;
@@ -57,16 +58,53 @@ app.post("/register",function(req,res){
 });
 
 app.post("/login",function(req,res){
-	console.dir(req.body);
     db.login(req.body.username,req.body.password,function(result){
 		if(result==1){
-			res.send("/home/");
+			req.sess.username=req.body.username;
+			res.send({"path":"/home/index.html"});
 		}else{
-			res.send("login failed");
+			res.send(-1);
 		}
 		res.end();
 	});
 });
+
+app.get("/logout",function(req,res){
+	console.log(req.sess);
+	req.sess.reset();
+	console.log(!req.sess.username);
+	console.log("session"+req.sess.username);
+	res.redirect("/login.html");
+	res.end();
+});
+
+app.post("/getQuestion",function(req,res){ //sends string
+	var un=req.body.username;
+	db.getUserQuestion(un,function(result){
+		if(result!=0){
+			res.send(result);
+		}else{
+			res.send("user not found");
+		}
+	});
+});
+
+app.post("/resetPass",function(req,res){ //sends string
+	var u=req.body;
+	if(u.password==u.cpassword){
+		delete u.cpassword;
+		db.resetPass(u,function(result){
+			if(result==1){
+				res.send("password reset");
+			}else{
+				res.send("security question's answer is wrong")
+			}
+		});
+	}else{
+		res.send("passwords don't match");
+	}
+});
+
 
 app.listen(80,function(){
     console.log("server running");
