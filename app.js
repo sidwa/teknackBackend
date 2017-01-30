@@ -106,7 +106,7 @@ app.post("/resetPass",function(req,res){ //sends string
 });
 
 
-app.listen(80,function(){
-    console.log("server running");
+app.listen(process.argv[2],function(){
+    console.log("server running at port "+process.argv[2]);
 });
 
