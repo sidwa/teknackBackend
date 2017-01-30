@@ -1,3 +1,0 @@
-#!/usr/bin/bash
-
-sudo node /home/sidred/Documents/tek/backend/app.js $1 
