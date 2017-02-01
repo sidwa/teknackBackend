@@ -4,7 +4,7 @@
   "description": "backend",
   "main": "app.js",
   "scripts": {
-    "test": "node /home/sidred/Documents/tek/backend/app.js 80"
+    "test": "sudo nodemon /home/sidred/Documents/tek/backend/app.js 80"
   },
   "repository": {
     "type": "git",

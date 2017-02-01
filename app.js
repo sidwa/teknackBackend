@@ -89,6 +89,24 @@ app.post("/getQuestion",function(req,res){ //sends string
 	});
 });
 
+app.post("/score",function(req,res){ //sends string
+	var game=req.body.game;
+	var score=req.body.score;
+	res.send("got your score request for "+game+" score updated to "+score);
+});
+
+app.post("/updateScore",function(req,res){ //sends string
+	var user=req.body;
+	db.updateScore(user,function(result){
+		if(result==1){
+			res.send("updated");
+		}else{
+			res.send("error")
+		}
+	});
+});
+
+
 app.post("/resetPass",function(req,res){ //sends string
 	var u=req.body;
 	if(u.password==u.cpassword){
@@ -106,7 +124,7 @@ app.post("/resetPass",function(req,res){ //sends string
 });
 
 
-app.listen(process.argv[2],function(){
+app.listen(process.argv[3],function(){
     console.log("server running at port "+process.argv[2]);
 });
 

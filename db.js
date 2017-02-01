@@ -2,7 +2,7 @@ var MongoClient= require("mongodb").MongoClient
 var assert=require("assert");
 var hash=require("password-hash");
 
-var url="mongodb://localhost:27017/tek";
+var url="mongodb://main:tek@localhost:27017/tek";
 
 function unTaken(un,func){      //tells if username is taken
     MongoClient.connect(url,function(err,db){
@@ -114,10 +114,15 @@ function insertUser(user,func){
 
 function updateUser(user,func){ //updates user from username
     MongoClient.connect(url,function(err,db){
+        if(err){
+            console.log(err);
+        }
         assert.equal(null,err);
+        console.log(user);
         var un=user.username;
         delete user.username;
         db.collection("user").update({"username":un},{$set:user},function(res){
+            console.log(res);
             func(1); // update successfull
             db.close();
         });
@@ -126,21 +131,31 @@ function updateUser(user,func){ //updates user from username
 }
 
 function resetPass(user,func){    
-        getUserById(user.username,function(result){
-            if(hash.verify(user.a,result.a)){  //correct security question's answer
-                delete user.a;
-                user.password=hash.generate(user.password);
-                updateUser(user,function(result1){
-                    if(result1==1){
-                        func(1); // successfully reset password
-                    }
-                });
-            }else{
-                func(0); //the asnwer is not correct
-            }
-        });
+    getUserById(user.username,function(result){
+        if(hash.verify(user.a,result.a)){  //correct security question's answer
+            delete user.a;
+            user.password=hash.generate(user.password);
+            updateUser(user,function(result1){
+                if(result1==1){
+                    func(1); // successfully reset password
+                }
+            });
+        }else{
+            func(0); //the asnwer is not correct
+        }
+    });    
 }
 
+function updateScore(user,func){
+    console.log(user);
+    updateUser(user,function(result){
+        if(result==1){
+            func(1);    //score updated
+        }else{
+            func(0);    //score updated failed
+        }
+    });
+}
 
 //testing for registration    
 //var user=new Object();
@@ -197,4 +212,5 @@ module.exports.login=login;
 module.exports.unTaken=unTaken;
 module.exports.getUserQuestion=getUserQuestion;
 module.exports.register=insertUser;
+module.exports.updateScore=updateScore;
 module.exports.resetPass=resetPass;
