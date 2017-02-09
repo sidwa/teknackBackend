@@ -1,3 +1,5 @@
+// DO NOT EDIT!!!!!!!
+//Import this file as a module into whatever file updates the score on your DB
 var http = require("http");
 var options = {
 	hostname: 'localhost',
@@ -8,7 +10,7 @@ var options = {
 		'Content-Type': 'application/json',
 	}
 };
-//game
+//game table 
 /*
 Event name                - name to pass to the function
 Mega Event                - megaPoints
@@ -21,40 +23,33 @@ Deadly Exhaust Wat        - DEW
 Chase Infinity            - chaseInfinity
 space terra               - spaceTerra
 Do or Die                 - DOD
-Space Shuttle             - spaceShuttle
+Space Rush                - spaceRush
 */
 
-/*
-    backflip - 100
-    
-*/
-function updateScore(game,score,username,func){
+function updateScore(game,score,username,func){   //use this only for high score
     options.path="/updateScore"
     var request = http.request(options, function(response) {
         console.log('Status: ' + response.statusCode);
         response.setEncoding('utf8');
         response.on('data', function (result) {               // on receiving data from server
-            func(result);
+            func(result);  //if result is 1, then the score has been updated successfully
         });
     });
     request.on('error', function(e) {
         console.log('problem with request: ' + e.message);
         func("error connecting "+e.message);
     });
-    var x=new Object();
-    x.game=game;
-    x.score=score;
-    console.log(JSON.stringify(x));
-    var str='{"'+x.game+'":'+x.score+',"username":"'+username+'"}';
-    //str=JSON.parse(str);
-    //console.log(JSON.stringify(str));
-    //str=JSON.stringify(str);
+    var password="ahjc135kbahjd19357"
+    var str='{"'+game+'":'+score+',"username":"'+username+'","password":"'+password+'"}';
     // write data to request body
     request.write(str);  // sending JSON data as specified in the header
     request.end();
 }
 
-function getScore(game,username,func){
+
+
+
+function getScore(game,username,func){   //used to fetch high score and create leaderboard
     options.path="/getScore"
     var request = http.request(options, function(response) {
         console.log('Status: ' + response.statusCode);
@@ -67,30 +62,105 @@ function getScore(game,username,func){
         console.log('problem with request: ' + e.message);
         func("error connecting "+e.message);
     });
-    var x=new Object();
-    x.game=game;
-    console.log(JSON.stringify(x));
-    var str='{"username":"'+username+'"}';
-    str=JSON.parse(str);
-    console.log(JSON.stringify(str));
-    //str=JSON.stringify(str);
-    // write data to request body
-    request.write(JSON.stringify(str));  // sending JSON data as specified in the header
+    var str='{"username":"'+username+'","game":"'+game+'"}';
+    request.write(str);  // sending JSON data as specified in the header
     request.end();
 }
 
-function upmeg(username,valve,func){
-    miley=valve
+
+
+function updateMega(username,score,func){ //increments mega points by the 'score' sent as argument
+    options.path="/updateMega"
+    var request = http.request(options, function(response) {
+        console.log('Status: ' + response.statusCode);
+        response.setEncoding('utf8');
+        response.on('data', function (result) {               // on receiving data from server
+            func(result); //if result is 1, mega points have been updated successfully
+        });
+    });
+    request.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+        func("error connecting "+e.message);
+    });
+    var password="iqwurg4609dkshiuyqr"
+    var str='{"megaPoints":'+score+',"username":"'+username+'","password":"'+password+'"}';
+    // write data to request body
+    request.write(str);  // sending JSON data as specified in the header
+    request.end();   
 }
 
+
+
+function getMega(username,func){
+    options.path="/getMega"
+    var request = http.request(options, function(response) {
+        console.log('Status: ' + response.statusCode);
+        response.setEncoding('utf8');
+        response.on('data', function (score) {               // on receiving data from server
+            func(score);
+        });
+    });
+    request.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+        func("error connecting "+e.message);
+    });
+    var str='{"username":"'+username+'"}';
+    request.write(str);  // sending JSON data as specified in the header
+    request.end();
+}
+
+function getNames(username,func){
+    options.path="/getNames"
+    var password="oihcbja31jchb391#2";
+    var request = http.request(options, function(response) {
+        console.log('Status: ' + response.statusCode);
+        response.setEncoding('utf8');
+        response.on('data', function (names) {               // on receiving data from server
+            func(names);
+        });
+    });
+    request.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+        func("error connecting "+e.message);
+    });
+    var str='{"username":"'+username+'","password":"'+password+'"}';
+    request.write(str);  // sending JSON data as specified in the header
+    request.end();
+}
+
+// **** USAGE OF ALL FUNCTIONS ****
+
+//put game name as specified in the table at the top of this file
+
 // usage for update score
-updateScore("OTH",2000,"sidwa",function(result){
-    console.log("result:"+result);
-});
+// updateScore("DEW",2000,"sidwa",function(result){ //update (high)score for deadly exhaust war for user sidwa 
+//     console.log("update Done?:"+result); //result is 1 if update successful
+// });
 
 //usage for get score
-//getScore("OTH","tekplayer",function(score){
-//     console.log("score:"+result);
+// getScore("OTH","sidwa",function(score){     //get score for online treasure hunt for user sidwa
+//     console.log("score:"+score);
 // });
+
+//usage for updateMega
+// updateMega("sidwa",100,function(result){ //increase mega points by 10 for user sidwa
+//     console.log("update Done?:"+result); //result is 1 if update successful
+// });
+
+//usage for getMega
+// getMega("sidwa",function(score){
+//     console.log("score:"+score);
+// });
+
+// getNames("sidwa",function(names){
+//     names=JSON.parse(names)
+//     console.log("firstname:"+names.firstname+" lastname:"+names.lastname);
+// });
+
+// db.user.update({"tek":{$ne:null}},{$rename:{"auctionit":"auctionIt","chaseinfinity":"chaseInfinity"}},{multi:true})
+
 module.exports.updateScore=updateScore;
 module.exports.getScore=getScore;
+module.exports.updateMega=updateMega;
+module.exports.getMega=getMega;
+module.exports.getNames=getNames;

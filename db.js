@@ -3,7 +3,7 @@ var assert=require("assert");
 var hash=require("password-hash");
 
 var url="mongodb://main:tek@localhost:27017/tek";
-
+//******* login register related section **********//
 function unTaken(un,func){      //tells if username is taken
     MongoClient.connect(url,function(err,db){
         assert.equal(null,err);
@@ -23,15 +23,16 @@ function unTaken(un,func){      //tells if username is taken
 function getUserById(un,func){
     MongoClient.connect(url,function(err,db){
         assert.equal(null,err);
-
+        //console.log(un);
         db.collection("user").find({"username":un}).toArray(function(err,doc){
-            db.close();
-            if(doc.length>0){
+            //console.dir(doc);
+            if(doc.length==1){
+                //console.log(doc);
                 func(doc[0]);
             }else{
                 func(0);
             }
-                
+            db.close();
         });
     });
 }
@@ -59,7 +60,7 @@ function login(un,pass,func){     //use this for login
                     func(0);
                 }
             }
-                
+            db.close(); 
         });
     });
 }
@@ -71,9 +72,7 @@ function login(un,pass,func){     //use this for login
 function insertUser(user,func){ 
     getUserById(user.username,function(result){ //username taken?
         console.log(user);
-        if(result==1){ //username not taken
-            console.log(user.password);
-            console.log(user.cpassword);
+        if(result==0){ //username not taken
             console.log(user.password!=user.cpassword);
             if(user.password!=user.cpassword){ //confirm if password and confirm password match
                 console.log("password no match");
@@ -84,17 +83,18 @@ function insertUser(user,func){
             delete user.tek; 
             delete user.cpassword; //confirm password no longer needed
             user.password=hash.generate(user.password);
+            user.a=hash.generate(user.a);
             MongoClient.connect(url,function(err,db){
                 assert.equal(null,err);
                 //var doc=JSON.stringify(user)
                 db.collection("user").find({"tek":tek}).toArray(function(err,res){
-                    console.log("after check");
-                    console.dir(res)
+                    //console.log("after check");
+                    //console.dir(res)
                     if(res.length==1 && res[0].username==null){
                         db.collection("user").updateOne({"tek":tek},{$set:user},function(err,res){
-                            console.log("after update");
+                            //console.log("after update");
                             db.collection("user").find({"tek":tek}).toArray(function(err,res){
-                                console.dir(res)
+                                //console.dir(res)
                                 db.close();
                                 func(1);  //user sucessfully registered       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                             });
@@ -146,6 +146,8 @@ function resetPass(user,func){
     });    
 }
 
+//********  API SECTION ********************//
+
 function updateScore(user,func){
     console.log(user);
     updateUser(user,function(result){
@@ -156,6 +158,77 @@ function updateScore(user,func){
         }
     });
 }
+
+function getScore(user,func){
+    var game=user.game
+    getUserById(user.username,function(doc){
+        if(doc!=0){
+            console.log(doc);
+            func(doc[game]); //game score sent
+        }else{
+            func(0);        //user not found
+        }
+    });
+}
+
+function updateMega(user,func){
+    MongoClient.connect(url,function(err,db){
+        if(err){
+            console.log(err);
+        }
+        assert.equal(null,err);
+        console.log(user);
+        var un=user.username;
+        delete user.username;
+        db.collection("user").update({"username":un},{$inc:{"megaPoints":user.megaPoints}},function(res){
+            //console.log(res);
+            if(res==null){
+                func(1); // update successfull
+            }else{
+                func(0);
+            }
+            db.close();
+        });
+        //console.log(res);
+    });
+}
+
+// var user=new Object();
+// user.username="sidwa";
+// user.megaPoints=-30;
+
+// updateMega(user,function(result){
+//     if(result==1){
+//         console.log("yeee");
+//     }else{
+//         console.log("noo :(");
+//     }
+// });
+
+function getMega(user,func){
+    getUserById(user.username,function(doc){
+        if(doc!=0){
+            func(doc.megaPoints); //game score sent
+        }else{
+            func(0);        //user not found
+        }
+    });
+}
+
+function getNames(un,func){
+    getUserById(un,function(doc){
+        if(doc!=0){
+            var names=new Object();
+            names.firstname=doc.fn;
+            names.lastname=doc.ln;
+            func(JSON.stringify(names)); //game score sent
+        }else{
+            func("0");        //user not found
+        }
+    });
+}
+
+
 
 //testing for registration    
 //var user=new Object();
@@ -207,10 +280,13 @@ function updateScore(user,func){
 // });
 
 
-
 module.exports.login=login;
 module.exports.unTaken=unTaken;
 module.exports.getUserQuestion=getUserQuestion;
+module.exports.resetPass=resetPass;
 module.exports.register=insertUser;
 module.exports.updateScore=updateScore;
-module.exports.resetPass=resetPass;
+module.exports.getScore=getScore;
+module.exports.updateMega=updateMega;
+module.exports.getMega=getMega;
+module.exports.getNames=getNames;

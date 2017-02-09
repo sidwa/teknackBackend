@@ -17,24 +17,25 @@ var username=[];
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(bodyparser.json({type:"application/json"}));
 
-app.use(session({                //
+
+app.use(session({                
 	cookieName: "sess",
-	secret: "don'thack!!",
+	secret: "134klh389dbcbsldvn1mcbj",
 	duration: 30 * 60 * 1000, //30 min session duration
 	activeDuration: 5 * 60 * 1000 //5 min active session
 }));
 
-app.use("/home", function (req, res, next) {   //check if session started
-	if (!req.sess.username) {
+app.use("/home",function (req, res, next) {   //check if session started
+	if (!req.sess.username){
 		console.log("redirecting cookie not found");
-		res.redirect("/index.html");
+		res.redirect("/login.html");
 		//next();
 	} else {
 		next();
 	}
 });
 
-app.use("/",express.static(__dirname+"/www"));
+
 
 
 app.post("/register",function(req,res){
@@ -42,14 +43,24 @@ app.post("/register",function(req,res){
 	delete req.body.register_code;
 	db.register(req.body,function(result){
 		console.log("result:"+result);
+		var d=new Object();
 		switch(result){
-			case -1:res.send("passwords don't match");
+			case -1:d.response="passwords don't match";
+					d=JSON.stringify(d);
+					res.send(d);
 				break;
-			case 0:res.send("username taken");
+			case 0:d.response="username already taken";
+					d=JSON.stringify(d);
+					res.send(d);
 				break;
-			case 1:res.send({"path":"/login.html"});
+			case 1:d.response="success";
+					d=JSON.stringify(d);
+					res.send(d);
 				break;
-			case 2:res.send("registration code taken or invalid");
+			case 2:
+					d.response="registration code taken or invalid";
+					d=JSON.stringify(d);
+					res.send(d);
 				break;
 			//default:res.send("err"); 
 		}
@@ -89,24 +100,6 @@ app.post("/getQuestion",function(req,res){ //sends string
 	});
 });
 
-app.post("/score",function(req,res){ //sends string
-	var game=req.body.game;
-	var score=req.body.score;
-	res.send("got your score request for "+game+" score updated to "+score);
-});
-
-app.post("/updateScore",function(req,res){ //sends string
-	var user=req.body;
-	db.updateScore(user,function(result){
-		if(result==1){
-			res.send("updated");
-		}else{
-			res.send("error")
-		}
-	});
-});
-
-
 app.post("/resetPass",function(req,res){ //sends string
 	var u=req.body;
 	if(u.password==u.cpassword){
@@ -124,7 +117,75 @@ app.post("/resetPass",function(req,res){ //sends string
 });
 
 
-app.listen(process.argv[3],function(){
-    console.log("server running at port "+process.argv[2]);
+app.post("/score",function(req,res){ //sends string
+	var game=req.body.game;
+	var score=req.body.score;
+	res.send("got your score request for "+game+" score updated to "+score);
+});
+
+app.post("/updateScore",function(req,res){ //sends string
+	var user=req.body;
+	if(user!=null && user.password=="ahjc135kbahjd19357"){
+		db.updateScore(user,function(result){
+			if(result==1){
+				res.send("1");
+			}else{
+				res.send("0");
+			}
+		});
+	}else{
+		res.send("invalid data")
+	}
+});
+
+app.post("/getScore",function(req,res){ //sends string
+	var user=req.body;
+	db.getScore(user,function(score){
+		score=score.toString();
+		res.send(score);
+	});
+});
+
+app.post("/updateMega",function(req,res){ //sends string
+	var user=req.body;
+	if(user!=null && user.password=="iqwurg4609dkshiuyqr"){
+		delete user.password;
+		db.updateMega(user,function(result){
+			if(result==1){
+				res.send("1");
+			}else{
+				res.send("0");
+			}
+		});
+	}else{
+		res.send("invalid data");
+	}
+});
+
+app.post("/getMega",function(req,res){ //sends string
+	var user=req.body;
+	db.getMega(user,function(score){
+		score=score.toString();
+		res.send(score);
+	});
+});
+
+app.post("/getNames",function(req,res){
+	var un=req.body.username;
+	var pass=req.body.password;
+	if(pass=="oihcbja31jchb391#2"){
+		db.getNames(un,function(names){
+			res.send(names);
+		});
+	}else{
+		res.send("invalid data")
+	}
+		
+});
+
+app.use("/",express.static(__dirname+"/www"));
+
+app.listen(process.argv[2],function(){
+	console.log("server running at port "+process.argv[2]);
 });
 

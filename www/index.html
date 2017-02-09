@@ -1,10 +1,266 @@
-<html>
-
-<body>
-    <h1>MultiFile</h1>
-    <div id="out"></div><br>
-    <button type="button" name="test" id="test">js!</button>
-</body>
-<script type="text/javascript" src="./index.js">
-</script>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Teknack 2017 | The Online Technical Festival of ACM DBIT</title>
+    <meta name="author" content="Broxmen">
+    <meta name="description" content="Teknack is a two-day inter-collegiate online technical festival organized by the ACM Student Chapter of Don Bosco Institute Of Technology | Gaming festival by ACM DBIT | Teknack is coming soon on 11th and 12th February 2017">
+    <meta name="keywords" content="teknack,2017,games,gaming,don bosco,dbit,space,colonization,pcmasterrace,iphone5,apple">
+    <link rel="stylesheet" type="text/css" href="stylesheets/jquery.fullpage.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/examples.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/tachyons.css">
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Shade" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-P963WW7');
+    </script>
+    <style>
+      /* Sections
+      * --------------------------------------- */
+      body{
+      font-family: 'Orbitron', sans-serif;
+      }
+      #section0 img,
+      #section1 img{
+      margin: 20px 0 0 0;
+      }
+      #section2 img{
+      margin: 20px 0 0 52px;
+      }
+      section3 img{
+      bottom: 0px;
+      position: absolute;
+      margin-left: -420px;
+      }
+      .intro p{
+      width: 50%;
+      margin: 0 auto;
+      font-size: 1.5em;
+      }
+      .twitter-share-button{
+      position: absolute;
+      z-index: 99;
+      right: 149px;
+      top: 9px;
+      }
+      .techy{
+      font-family: 'Bungee Shade', cursive;
+      }
+      /* Hang */
+      @-webkit-keyframes hvr-hang {
+      0% {
+      -webkit-transform: translateY(8px);
+      transform: translateY(8px);
+      }
+      50% {
+      -webkit-transform: translateY(4px);
+      transform: translateY(4px);
+      }
+      100% {
+      -webkit-transform: translateY(8px);
+      transform: translateY(8px);
+      }
+      }
+      @keyframes hvr-hang {
+      0% {
+      -webkit-transform: translateY(8px);
+      transform: translateY(8px);
+      }
+      50% {
+      -webkit-transform: translateY(4px);
+      transform: translateY(4px);
+      }
+      100% {
+      -webkit-transform: translateY(8px);
+      transform: translateY(8px);
+      }
+      }
+      @-webkit-keyframes hvr-hang-sink {
+      100% {
+      -webkit-transform: translateY(8px);
+      transform: translateY(8px);
+      }
+      }
+      @keyframes hvr-hang-sink {
+      100% {
+      -webkit-transform: translateY(8px);
+      transform: translateY(8px);
+      }
+      }
+      100% {
+      -webkit-transform: translateY(8px);
+      transform: translateY(8px);
+      }
+      .hvr-hang {
+      vertical-align: middle;
+      -webkit-transform: perspective(1px) translateZ(0);
+      transform: perspective(1px) translateZ(0);
+      box-shadow: 0 0 1px transparent;
+      }
+      .giff{
+        background-image: url('http://i.giphy.com/TZf4ZyXb0lXXi.gif');
+        background-position: center;
+        background-size: cover;
+      }
+      .hvr-hang, .hvr-hang:focus, .hvr-hang:active {
+      -webkit-animation-name: hvr-hang-sink, hvr-hang;
+      animation-name: hvr-hang-sink, hvr-hang;
+      -webkit-animation-duration: .3s, 1.5s;
+      animation-duration: .3s, 1.5s;
+      -webkit-animation-delay: 0s, .3s;
+      animation-delay: 0s, .3s;
+      -webkit-animation-timing-function: ease-out, ease-in-out;
+      animation-timing-function: ease-out, ease-in-out;
+      -webkit-animation-iteration-count: 1, infinite;
+      animation-iteration-count: 1, infinite;
+      -webkit-animation-fill-mode: forwards;
+      animation-fill-mode: forwards;
+      -webkit-animation-direction: normal, alternate;
+      animation-direction: normal, alternate;
+      }
+      #section1{
+        background-image: url('http://images6.fanpop.com/image/photos/33300000/Abstract-Space-space-33308889-1920-1200.jpg');
+      }
+      #section2{
+        background-image: url('http://cdn.wonderfulengineering.com/wp-content/uploads/2014/04/space-wallpaper.jpg');
+      }
+      #section3{
+        background-image: url('http://1.bp.blogspot.com/--GTfMhbQdQI/Ttzqirr8xaI/AAAAAAAABC4/yprXSqwh030/s1600/space-station-background-3-710334.jpg');
+      }
+      #section5{
+        background-image: url('/images/background.jpg');
+      }
+    </style>
+    <!--
+    if IE
+    script(type='text/javascript').
+    var console = { log: function() {} };
+    -->
+    <script src="javascripts/jquery.min.js"></script>
+    <script src="javascripts/jquery-ui.min.js"></script>
+    <script src="javascripts/jquery.fullpage.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
+    <script type="text/javascript" src="examples.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+      $('#fullpage').fullpage({
+      anchors: ['firstPage', 'secondPage', '3rdPage', '4thpage', '5thpage'],
+      menu: '#menu',
+      scrollingSpeed: 1000,
+      autoScrolling: true
+      });
+      });
+    </script>
+    <script type="text/javascript">
+      if(mobile) {
+      $('.mobile1').hide();
+      }
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P963WW7" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <ul id="menu" class="mobile1">
+      <li data-menuanchor="firstPage"><a href="#firstPage">Home</a></li>
+      <li data-menuanchor="secondPage"><a href="#secondPage">Games</a></li>
+      <li data-menuanchor="3rdPage"><a href="#3rdPage">Sponsors</a></li>
+      <li data-menuanchor="4thpage"><a href="#4thpage">Contact Us</a></li>
+      <li data-menuanchor="5thpage"><a href="#5thpage">Register</a></li>
+    </ul>
+    <div id="fullpage">
+      <div id="section0" class="section active giff"><img src="images/logonew.png" style="width:600px;">
+				<div id="clock"></div>
+        <p class="f2 mt4 white techy">READY<br><br>          STEADY<br><br>          LAUNCH !!</p><a href="#secondPage"><img src="images/Down-Arrow-PNG-File.png" style="width:50px;height:25px;margin-top:120px;" class="hvr-hang"></a>
+      </div>
+      <div id="section1" class="section">
+        <div class="slide">
+          <div class="intro">
+            <h1 class="white">Games of Teknack 2017</h1>
+            <p class="white">Catch a glimpse of our games of Teknack! <br>Press the right arrow or swipe left to start the adventure!</p>
+            <!--.mt4.mw6.center
+            //a(href='https://tanks.teknack.in')
+              //.center.white.f2.red.ba.b--red.pa2 Play Demo Game Tanks
+            -->
+          </div>
+        </div>
+        <div class="slide">
+          <div class="intro"><img src="images/logos/spacerush.png" alt="simple">
+            <h1 class="white">Space Rush</h1>
+            <!-- p.white Easy to use. Configurable and customizable.-->
+          </div>
+        </div>
+        <div class="slide">
+          <div class="intro"><img src="images/logos/spaceterra.png" alt="Cool">
+            <h1 class="white">SpaceTerra</h1>
+            <!-- p.white It just looks cool. Impress everybody with a simple and modern web design!-->
+          </div>
+        </div>
+        <div class="slide">
+          <div class="intro"><img src="images/logos/terrav.png" alt="Compatible">
+            <h1 class="white">TerraVerse</h1>
+            <!--p.white// | Working in modern and old browsers too! IE 8 users don't have the fault of using that horrible browser!
+            -->
+          </div>
+        </div>
+      </div>
+      <div id="section2" class="section">
+        <div class="intro">
+          <h1 class="white">Our Sponsors</h1>
+          <p class="white">The people without whom this event would be impossible!</p><img src="images/our-sponsors.png" alt="example">
+        </div>
+      </div>
+      <div id="section3" class="section">
+        <div class="intro">
+          <h1 class="white">Contact Us</h1>
+          <p><br><br><br><br></p>
+        </div>
+        <div class="fl w-third-ns"><a href="https://www.facebook.com/Teknack">
+            <svg width="156px" height="106px" viewbox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveaspectratio="xMidYMid">
+              <g>
+                <path d="M241.871,256.001 C249.673,256.001 256,249.675 256,241.872 L256,14.129 C256,6.325 249.673,0 241.871,0 L14.129,0 C6.324,0 0,6.325 0,14.129 L0,241.872 C0,249.675 6.324,256.001 14.129,256.001 L241.871,256.001" fill="#395185"></path>
+                <path d="M176.635,256.001 L176.635,156.864 L209.912,156.864 L214.894,118.229 L176.635,118.229 L176.635,93.561 C176.635,82.375 179.742,74.752 195.783,74.752 L216.242,74.743 L216.242,40.188 C212.702,39.717 200.558,38.665 186.43,38.665 C156.932,38.665 136.738,56.67 136.738,89.736 L136.738,118.229 L103.376,118.229 L103.376,156.864 L136.738,156.864 L136.738,256.001 L176.635,256.001" fill="#FFFFFF"></path>
+              </g>
+            </svg></a></div>
+        <div class="fl w-third-ns"><a href="mailto:teknackdbit@gmail.com?Subject=Teknack%20Email%20Contact">
+            <svg width="156px" height="94px" viewbox="0 0 256 194" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveaspectratio="xMidYMid">
+              <defs>
+                <lineargradient id="linearGradient-1" x1="0.00388991071%" y1="49.997619%" x2="100.032232%" y2="49.997619%">
+                  <stop stop-color="#000000" stop-opacity="0.1" offset="0%"></stop>
+                  <stop stop-color="#000000" stop-opacity="0.2" offset="100%"></stop>
+                </lineargradient>
+              </defs>
+              <g>
+                <path d="M238.833923,193.595007 L16.1542195,193.595007 C7.51970044,193.595007 0.248526454,186.551057 0.248526454,177.689314 L0.248526454,16.8145898 C0.248526454,8.18007073 7.29247625,0.908896748 16.1542195,0.908896748 L238.833923,0.908896748 C247.468442,0.908896748 254.739616,7.95284654 254.739616,16.8145898 L254.739616,177.689314 C254.739616,186.551057 247.695666,193.595007 238.833923,193.595007 L238.833923,193.595007 Z" fill="#E3E3E3"></path>
+                <path d="M32.0599126,193.595007 L127.266847,117.020456 L127.94852,112.930421 L29.7876708,42.2636988 L29.5604466,190.186644 L32.0599126,193.595007 Z" opacity="0.1" fill="#231F20"></path>
+                <path d="M16.1542195,193.595007 C7.29247625,193.595007 0.248526454,186.551057 0.248526454,177.689314 L0.248526454,16.5873656 C0.248526454,7.72562236 7.29247625,6.13505305 16.1542195,6.13505305 C25.0159628,6.13505305 32.0599126,7.95284654 32.0599126,16.5873656 L32.0599126,193.595007 L16.1542195,193.595007 L16.1542195,193.595007 Z" fill="#D54B3D"></path>
+                <path d="M16.1542195,8.40729492 C27.5154289,8.40729492 29.7876708,11.8156577 29.7876708,16.5873656 L29.7876708,191.322765 L16.1542195,191.322765 C8.65582137,191.322765 2.52076832,185.187712 2.52076832,177.689314 L2.52076832,16.5873656 C2.52076832,11.5884335 4.79301019,8.40729492 16.1542195,8.40729492 L16.1542195,8.40729492 Z M16.1542195,6.13505305 C7.29247625,6.13505305 0.248526454,7.95284654 0.248526454,16.5873656 L0.248526454,177.689314 C0.248526454,186.551057 7.29247625,193.595007 16.1542195,193.595007 L32.0599126,193.595007 L32.0599126,16.5873656 C32.0599126,7.72562236 25.0159628,6.13505305 16.1542195,6.13505305 L16.1542195,6.13505305 L16.1542195,6.13505305 Z" fill="#D72B27"></path>
+                <path d="M238.833923,193.595007 L222.92823,193.595007 L222.92823,16.1329173 C222.92823,7.27117398 229.972179,6.13505305 238.833923,6.13505305 C247.695666,6.13505305 254.739616,7.27117398 254.739616,16.1329173 L254.739616,177.916538 C254.739616,186.551057 247.695666,193.595007 238.833923,193.595007 L238.833923,193.595007 Z" fill="#D54B3D"></path>
+                <path d="M238.833923,8.40729492 C249.059011,8.40729492 252.467374,10.4523126 252.467374,16.1329173 L252.467374,177.916538 C252.467374,185.414937 246.332321,191.54999 238.833923,191.54999 L225.200472,191.54999 L225.200472,16.1329173 C225.200472,10.2250884 228.608834,8.40729492 238.833923,8.40729492 L238.833923,8.40729492 Z M238.833923,6.13505305 C229.972179,6.13505305 222.92823,7.27117398 222.92823,16.1329173 L222.92823,193.822231 L238.833923,193.822231 C247.695666,193.822231 254.739616,186.778282 254.739616,177.916538 L254.739616,16.1329173 C254.739616,7.27117398 247.695666,6.13505305 238.833923,6.13505305 L238.833923,6.13505305 L238.833923,6.13505305 Z" fill="#D72B27"></path>
+                <path d="M170.666667,193.595007 L1.57979906,23.1947544 L10.4736149,26.8124541 L128.175744,111.567076 L254.73962,18.7604631 L254.739616,177.916538 C254.739616,186.551057 247.695666,193.595007 238.833923,193.595007 L170.666667,193.595007 Z" fill="url(#linearGradient-1)"></path>
+                <path d="M127.266847,117.020456 L7.06525206,29.7663685 C0.0213022675,24.5402122 -2.02371542,14.542348 3.20244088,7.49839817 C8.42859718,0.454448374 18.6536856,-1.13612093 25.9248596,4.09003537 L127.494071,77.9378961 L229.744955,3.18113862 C236.788905,-2.04501768 246.786769,-0.454448374 252.012926,6.81672561 C257.239082,13.8606754 255.648513,23.8585396 248.377339,29.0846959 L127.266847,117.020456 L127.266847,117.020456 Z" fill="#D54B3D"></path>
+                <path d="M238.833923,2.27224187 L238.833923,2.27224187 C243.151182,2.27224187 247.241218,4.31725955 249.967908,7.95284654 C254.285167,14.0878996 252.921822,22.4951945 247.013993,27.0396782 L127.266847,114.293766 L8.42859718,27.948575 C2.29354414,23.4040913 0.702974828,14.7695722 5.02023438,8.86174329 C7.51970044,5.45338049 11.83696,3.18113862 16.3814437,3.18113862 C19.3353582,3.18113862 22.2892726,4.09003537 24.5615145,5.90782886 L125.903502,79.5284654 L127.266847,80.4373622 L128.630192,79.5284654 L230.653852,4.77170793 C233.153318,3.18113862 235.880008,2.27224187 238.833923,2.27224187 L238.833923,2.27224187 Z M238.833923,0 C235.652784,0 232.244421,0.908896748 229.517731,2.95391443 L127.266847,77.7106719 L25.6976354,3.86281118 C22.9709451,1.8177935 19.5625823,0.908896748 16.1542195,0.908896748 C11.1552874,0.908896748 6.15635532,3.18113862 2.9752167,7.49839817 C-2.02371542,14.542348 0.0213022675,24.5402122 7.06525206,29.7663685 L127.266847,117.24768 L248.150114,29.0846959 C255.194064,23.8585396 256.784634,14.0878996 251.785701,6.81672561 C248.604563,2.27224187 243.832855,0 238.833923,0 L238.833923,0 L238.833923,0 Z" fill="#D72B27"></path>
+              </g>
+            </svg></a></div>
+        <div class="fl w-third-ns"><a href="https://twitter.com/search?q=%23teknack&amp;src=typd&amp;lang=en">
+            <svg width="156px" height="109px" viewbox="0 0 256 209" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveaspectratio="xMidYMid">
+              <g>
+                <path d="M256,25.4500259 C246.580841,29.6272672 236.458451,32.4504868 225.834156,33.7202333 C236.678503,27.2198053 245.00583,16.9269929 248.927437,4.66307685 C238.779765,10.6812633 227.539325,15.0523376 215.57599,17.408298 C205.994835,7.2006971 192.34506,0.822 177.239197,0.822 C148.232605,0.822 124.716076,24.3375931 124.716076,53.3423116 C124.716076,57.4586875 125.181462,61.4673784 126.076652,65.3112644 C82.4258385,63.1210453 43.7257252,42.211429 17.821398,10.4359288 C13.3005011,18.1929938 10.710443,27.2151234 10.710443,36.8402889 C10.710443,55.061526 19.9835254,71.1374907 34.0762135,80.5557137 C25.4660961,80.2832239 17.3681846,77.9207088 10.2862577,73.9869292 C10.2825122,74.2060448 10.2825122,74.4260967 10.2825122,74.647085 C10.2825122,100.094453 28.3867003,121.322443 52.413563,126.14673 C48.0059695,127.347184 43.3661509,127.988612 38.5755734,127.988612 C35.1914554,127.988612 31.9009766,127.659938 28.694773,127.046602 C35.3777973,147.913145 54.7742053,163.097665 77.7569918,163.52185 C59.7820257,177.607983 37.1354036,186.004604 12.5289147,186.004604 C8.28987161,186.004604 4.10888474,185.75646 0,185.271409 C23.2431033,200.173139 50.8507261,208.867532 80.5109185,208.867532 C177.116529,208.867532 229.943977,128.836982 229.943977,59.4326002 C229.943977,57.1552968 229.893412,54.8901664 229.792282,52.6381454 C240.053257,45.2331635 248.958338,35.9825545 256,25.4500259" fill="#55acee"></path>
+              </g>
+            </svg></a></div>
+      </div>
+      <div id="section5" class="section">
+        <div class="intro pa5"><a href="/reg.html">
+            <div class="f2 ba br1 b--white center pa2 white">Register Now</div></a></div>
+      </div>
+    </div>
+		<script type="text/javascript" src="javascripts/jquery.countdown.min.js"></script>
+    <script type="text/javascript" src="javascripts/custom.js"></script>
+    <script type="text/javascript" src="javascripts/device.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.mb.YTPlayer.js"></script>
+  </body>
 </html>
