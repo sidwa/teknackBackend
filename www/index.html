@@ -26,6 +26,19 @@
 	<link rel="icon" type="image/png" sizes="32x32" href="img/favicons/favicon-32x32.png">
 	<link rel="icon" type="image/png" sizes="96x96" href="img/favicons/favicon-96x96.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png">
+	<style type="text/css">
+    	#status{width:128px;height:128px;position:absolute;left:50%;top:4%;background-image:url('/img/ring.gif');background-repeat:no-repeat;background-position:center;margin:-100px 0 0 -100px; z-index: 999}
+    	#preloader  {
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    right: 0;
+		    bottom: 0;
+		    background-color: white;
+		    z-index: 998;
+		    height: 9000px;
+		 }
+    </style>
 	<link rel="manifest" href="img/favicons/manifest.json">
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
@@ -135,7 +148,9 @@
   	</style>
 </head>
 <body class="bg-black">
-
+	<div id="preloader">
+    	<div id="status">&nbsp;</div>
+	</div>
 	<div id="fb-root"></div>
 	<script>(function(d, s, id) {
 	  var js, fjs = d.getElementsByTagName(s)[0];
@@ -145,7 +160,7 @@
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));</script>
 
-	<nav class="dt top-0 z-999 bg-black-70 w-100 fixed pa2 pa2-ns">
+	<nav class="dt top-0 z-5 bg-black-70 w-100 fixed pa2 pa2-ns">
 
 	  <div class="dtc center tc bungee pb3">
 	    <a class="pa3 bb br--bottom b--gold link white f5 f6-m f4-ns dib mr3" href="#home" title="Home">Home</a>
@@ -692,6 +707,13 @@
 		    $('body').animate({scrollTop: stop + 'px'}, delay);
 		  });
 		});
+	</script>
+	<script type="text/javascript">
+        $(window).load(function() {
+            $('#status').fadeOut();
+            $('#preloader').delay(50).fadeOut('slow');
+            $('body').delay(50).css({'overflow':'visible'});
+        })
 	</script>
 	<script type="text/javascript">
 		toastr.options = {
