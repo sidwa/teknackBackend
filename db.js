@@ -2,7 +2,7 @@ var MongoClient= require("mongodb").MongoClient
 var assert=require("assert");
 var hash=require("password-hash");
 
-var url="mongodb://main:tek@localhost:27017/tek";
+var url="mongodb://backend:asslover@localhost:27017/tek";
 //******* login register related section **********//
 function unTaken(un,func){      //tells if username is taken
     MongoClient.connect(url,function(err,db){

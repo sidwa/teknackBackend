@@ -76,30 +76,15 @@ app.post("/register",function(req,res){
 });
 
 app.post("/login",function(req,res){
-	if(req.body.username=="admi" && req.body.password=="astalavista"){
-		req.sess.username=req.body.username;
-		res.send("success");
-	}else if(req.body.username=="mit" && req.body.password=="procoder"){
-		req.sess.username=req.body.username;
-                res.send("success");
-        }else if(req.body.username=="jeks" && req.body.password=="gandu"){
-		req.sess.username=req.body.username;
-                res.send("success");
-        }else if(req.body.username=="nish" && req.body.password=="ninja"){
-		req.sess.username=req.body.username;
-                res.send("success");
-        }else{
-//      db.login(req.body.username,req.body.password,function(result){
-//		if(result==1){
-//			req.sess.username=req.body.username;
-//			res.send("success");
-//		}else{
-//			res.send(-1);
-//		}
-//		res.end();
-//	});
-		res.send("login is not working yet");
-	}
+      db.login(req.body.username,req.body.password,function(result){
+		if(result==1){
+			req.sess.username=req.body.username;
+			res.send("success");
+		}else{
+			res.send(-1);
+		}
+		res.end();
+	});
 
 });
 
@@ -147,6 +132,7 @@ app.get("/session",function(req,res){ //sends string
 app.post("/updateScore",function(req,res){ //sends string
 	var user=req.body;
 	if(user!=null && user.password=="ahjc135kbahjd19357"){
+		delete user.password;
 		db.updateScore(user,function(result){
 			if(result==1){
 				res.send("1");
