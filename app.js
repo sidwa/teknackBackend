@@ -22,7 +22,14 @@ app.use(session({
 	cookieName: "sess",
 	secret: "134klh389dbcbsldvn1mcbj",
 	duration: 30 * 60 * 1000, //30 min session duration
-	activeDuration: 5 * 60 * 1000 //5 min active session
+	activeDuration: 5 * 60 * 1000, //5 min active session
+	cookie: {
+		domain: '.teknack.in',
+		path: '/',
+    		maxAge: 30*60000, // duration of the cookie in milliseconds, defaults to duration above
+		httpOnly: true, // when true, cookie is not accessible from javascript
+		secure: false // when true, cookie will only be sent over SSL. use key 'secureProxy' instead if you handle SSL not in your node process
+	}
 }));
 
 app.use("/home",function (req, res, next) {   //check if session started
@@ -69,15 +76,31 @@ app.post("/register",function(req,res){
 });
 
 app.post("/login",function(req,res){
-    db.login(req.body.username,req.body.password,function(result){
-		if(result==1){
-			req.sess.username=req.body.username;
-			res.send({"path":"/home/index.html"});
-		}else{
-			res.send(-1);
-		}
-		res.end();
-	});
+	if(req.body.username=="admi" && req.body.password=="astalavista"){
+		req.sess.username=req.body.username;
+		res.send("success");
+	}else if(req.body.username=="mit" && req.body.password=="procoder"){
+		req.sess.username=req.body.username;
+                res.send("success");
+        }else if(req.body.username=="jeks" && req.body.password=="gandu"){
+		req.sess.username=req.body.username;
+                res.send("success");
+        }else if(req.body.username=="nish" && req.body.password=="ninja"){
+		req.sess.username=req.body.username;
+                res.send("success");
+        }else{
+//      db.login(req.body.username,req.body.password,function(result){
+//		if(result==1){
+//			req.sess.username=req.body.username;
+//			res.send("success");
+//		}else{
+//			res.send(-1);
+//		}
+//		res.end();
+//	});
+		res.send("login is not working yet");
+	}
+
 });
 
 app.get("/logout",function(req,res){
@@ -117,10 +140,8 @@ app.post("/resetPass",function(req,res){ //sends string
 });
 
 
-app.post("/score",function(req,res){ //sends string
-	var game=req.body.game;
-	var score=req.body.score;
-	res.send("got your score request for "+game+" score updated to "+score);
+app.get("/session",function(req,res){ //sends string
+	res.send(req.sess);
 });
 
 app.post("/updateScore",function(req,res){ //sends string
@@ -185,7 +206,7 @@ app.post("/getNames",function(req,res){
 
 app.use("/",express.static(__dirname+"/www"));
 
-app.listen(process.argv[2],function(){
-	console.log("server running at port "+process.argv[2]);
+app.listen(3000,function(){
+	console.log("server running at port 3000");
 });
 

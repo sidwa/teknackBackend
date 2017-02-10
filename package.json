@@ -2,9 +2,10 @@
   "name": "teknack17",
   "version": "1.0.0",
   "description": "backend",
-  "main": "app.js",
+  "main": "back.js",
   "scripts": {
-    "test": "sudo nodemon /home/sidred/Documents/tek/backend/app.js 80"
+    "test": "sudo nodemon /home/sidred/Documents/tek/backend/back.js",
+    "st":"nodemon /home/sidwa/repositories/main-site/backend/back.js"
   },
   "repository": {
     "type": "git",
