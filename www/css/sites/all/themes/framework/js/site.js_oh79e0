@@ -1,0 +1,1229 @@
+(function($) {
+
+var isiPad = navigator.userAgent.match(/iPad/i) != null;
+
+var winWidth = $(window).width();
+var winHeight = $(window).height();
+
+var svgWidth = window.innerWidth,
+		svgHeight = window.innerHeight;
+		
+var animation = 0;
+var scroll_speed_normal = 5;
+var scroll_speed_fast = 3.2;
+var scroll_speedup = 0;
+
+
+
+$(document).ready(function(){
+
+	if(isiPad == true) {
+		$('#wrapper-main').css('position', 'absolute');
+	}
+		
+	var bincWidth = $('#bb_lines').width();
+	var bincHeight = $('#bb_lines').height();
+	
+	function showpanel() {
+		//alert("Width: " + $('#bb_lines').width() + ", Height: " + $("#bb_lines").height());
+	}
+	
+	
+	
+	
+		
+		
+	var binClipTop = (winHeight / 2) - 42;
+	var binRightClipLeft = (winWidth / 2) + 122;
+	var binLeftClipLeft = (winWidth / 2) - 124;
+
+	// SVG we will draw to
+	var svg = d3.select("#sky-wrapper").append("svg")
+	.attr("width", svgWidth)
+	.attr("height", svgHeight + 500)
+	.attr("id", "sky");
+	
+	// SVG we will draw Sky 2
+	var svg2 = d3.select("#sky-wrapper").append("svg")
+	.attr("width", svgWidth)
+	.attr("height", svgHeight + 500)
+	.attr("id", "sky-2");
+	
+	
+	
+	
+	
+	// clip path for the binoculars circle
+    svg.append("clipPath")
+			.attr('id', "clip_1")
+			.append('circle')
+				.attr('id', "skyclipRight")
+				.attr("cx", binRightClipLeft)
+				.attr("cy", binClipTop)
+				.attr("r", 70);
+		svg.select("#clip_1")
+			.append('circle')
+				.attr('id', "skyclipLeft")
+				.attr("cx", binLeftClipLeft)
+				.attr("cy", binClipTop)
+				.attr("r", 70);
+		
+		var skyGroup = svg.append("g")
+		.attr("clip-path", "url(#clip_1)");
+		
+		var skyGroup2 = svg2.append("g")
+		.attr("clip-path", "url(#clip_1)");
+		
+		// Add Sky BG
+		skyGroup.append("rect")
+			.attr("x", 0)
+			.attr("y", 0)
+			.attr("width", winWidth)
+			.attr("height", winHeight)
+			.style("fill", "black");
+			
+	function colorRandom() {
+		var num = Math.round(Math.random()*100);
+		if(num < 10) {
+			num = 10
+		}
+		return num;
+	}
+	
+	if(isiPad == false) {
+		colorRandom();
+	}
+	 
+	 nodes = d3.range(40).map(function() { return {
+			radius: Math.random() * 4, 
+			cx: Math.random() * svgWidth - 50 , 
+			cy: Math.random() * svgHeight - 50 } 
+		});
+		nodes2 = d3.range(40).map(function() { return {
+			radius: Math.random() * 4, 
+			cx: Math.random() * svgWidth - 50 , 
+			cy: Math.random() * svgHeight - 50 } 
+		});
+		
+	if(isiPad == false) {
+		
+			// Append each circle in nodes to SVG
+			for (var i = 0; i < nodes.length; i++) {
+					skyGroup.append("circle")
+					.attr("class", "circle")
+					.attr("cx", nodes[i].cx)
+					.attr("cy", nodes[i].cy)
+					.attr("r", nodes[i].radius)
+					.attr("fill", function() { return "hsl( 0, 0%, "+ colorRandom() +"%)" })
+			}
+			
+			// Append each circle in nodes to SVG
+			for (var i = 0; i < nodes2.length; i++) {
+					skyGroup2.append("circle")
+					.attr("class", "circle")
+					.attr("cx", nodes2[i].cx)
+					.attr("cy", nodes2[i].cy)
+					.attr("r", nodes2[i].radius)
+					.attr("fill", function() { return "hsl( 0, 0%, "+ colorRandom() +"%)" })
+			}
+	}
+		
+	
+	
+
+		
+	
+	// Load skrollr stylesheet
+	$.getScript( "sites/all/themes/framework/js/skrollr.stylesheets.min.js", function( data, textStatus, jqxhr ) {
+		/*console.log( data ); // Data returned
+		console.log( textStatus ); // Success
+		console.log( jqxhr.status ); // 200
+		console.log( "Load was performed." );*/
+	}).done(function() {
+	
+		//var binMax = winWidth * 7.14;
+		var binMaxVal = (winWidth / 92);
+		var binMax = binMaxVal * 800;
+		var binOffset_x = binMaxVal * 525;
+		var binOffset_y = binMaxVal * 355;
+		var binOffset_c1_r = (binMaxVal / 2) * 135;
+		var clipMax = (winWidth / 2) + 160;
+		var clipMaxTop = (winHeight / 2) + 50;
+		var clipMaxLeft = (winWidth / 2);
+		var clipLeftMax_Left = (binMax / 2) - (binMaxVal * 103) - winWidth;
+		
+		//console.info(binMax,clipLeftMax_Left);
+		
+		$('#skyclipLeft').attr('data-0', "@r:67;@cx:"+ binLeftClipLeft +";@cy:"+ binClipTop +";");
+		$('#skyclipLeft').attr('data-800', "@r:"+binOffset_c1_r+";@cx:-"+ clipLeftMax_Left +";@cy:"+ clipMaxTop +";");
+		$('#skyclipLeft').attr('data-40700', "@r:"+binOffset_c1_r+";@cx:-"+ clipLeftMax_Left +";@cy:"+ clipMaxTop +";");
+		$('#skyclipLeft').attr('data-41500', "@r:67;@cx:"+ binLeftClipLeft +";@cy:"+ binClipTop +";");
+		
+		$('#skyclipRight').attr('data-0', "@r:67;@cx:"+ binRightClipLeft +";@cy:"+ binClipTop +";");
+		$('#skyclipRight').attr('data-800', "@r:"+binOffset_c1_r+";@cx:"+ clipMaxLeft +";@cy:"+ clipMaxTop +";");
+		$('#skyclipRight').attr('data-40700', "@r:"+binOffset_c1_r+";@cx:"+ clipMaxLeft +";@cy:"+ clipMaxTop +";");
+		$('#skyclipRight').attr('data-41500', "@r:67;@cx:"+ binRightClipLeft +";@cy:"+ binClipTop +";");
+		
+		//$('#binoculars').attr('data-800', "width:"+binMax+"px;height:"+binMax+"px;margin-left: -7867px; margin-top: -5397px;");
+		$('#binoculars').attr('data-800', "display:block; width:"+binMax+"px;height:"+binMax+"px;margin-left:-"+binOffset_x+"px; margin-top:-"+binOffset_y+"px;");
+		$('#binoculars').attr('data-40700', "display:block; width:"+binMax+"px;height:"+binMax+"px;margin-left:-"+binOffset_x+"px; margin-top:-"+binOffset_y+"px;");
+		
+		//Stars-animation
+		var skyCircle = $("#sky").find(".circle");
+		var sky2Circle = $("#sky-2").find(".circle");
+		
+		$(skyCircle).each(function() {
+			var cy =  parseInt($(this).attr('cy'));
+			var cy_start = cy;
+			var cy_end = cy - (winHeight);
+			var cy_start2 = cy + (winHeight / 2);
+			var cy_end2 = cy;
+			$(this).attr('data-0', '@cy:' + cy_start);
+			$(this).attr('data-8500', '@cy:' + cy_end);
+			$(this).attr('data-26299', '@cy:' + cy_end);
+			$(this).attr('data-36700', '@cy:' + cy_start2);
+			$(this).attr('data-41500', '@cy:' + cy_end2);
+		});
+		
+		$(sky2Circle).each(function() {
+			var cy = parseInt($(this).attr('cy'));
+			var cy_start = cy + (winHeight / 2);
+			var cy_end = cy - (winHeight / 5);
+			var cy_start2 = cy;
+			var cy_end2 = cy - (winHeight / 3);			
+			$(this).attr('data-0', '@cy:' + cy_start);
+			$(this).attr('data-8500', '@cy:' + cy_end);
+			$(this).attr('data-26299', '@cy:' + cy_end);
+			$(this).attr('data-36700', '@cy:' + cy_start2);
+			$(this).attr('data-41500', '@cy:' + cy_end2);
+			
+		});
+		
+		
+		
+		var wCenterH = (winWidth / 2) - 6;
+		var wCenterV = winHeight / 2;
+
+		var jdlogo_CenterV = wCenterV - 28.5;
+		var jdlogo_midpoint = wCenterH +","+ jdlogo_CenterV;
+
+		var bb_dot2_pos3x = -265 + jdlogo_CenterV;
+		var bb_dot2_pos3y = wCenterH  - 65;
+		
+		/*var line1_s3_pos_1 = "@d:M " + jdlogo_midpoint + ' ' + jdlogo_midpoint+";";
+		var line1_s3_pos_2 = "@d:M " + jdlogo_midpoint + " " + (wCenterH - 244) + "," + jdlogo_CenterV+";";
+		var line1_s3_pos_3 = "@d:M " + wCenterH - 120 + "," + jdlogo_CenterV;*/
+		
+		//Line1
+		var line1_pos1_start = jdlogo_midpoint;
+		var line1_pos1_end = jdlogo_midpoint;
+			var line1_pos1 = "@d:M " + line1_pos1_start + " " + jdlogo_midpoint;
+		var line1_pos2_start = jdlogo_midpoint;
+		var line1_pos2_end = (wCenterH - 244) + "," + jdlogo_CenterV;
+			var line1_pos2 = "@d:M " + line1_pos2_start + " " + line1_pos2_end;
+		var line1_pos3_start = jdlogo_midpoint;
+		var line1_pos3_end = (wCenterH - 116) + "," + (jdlogo_CenterV + 74);
+			var line1_pos3 = "@d:M " + line1_pos3_start + " " + line1_pos3_end;
+		var line1_pos4_start = jdlogo_midpoint;
+		var line1_pos4_end = (wCenterH - 35) + "," + (jdlogo_CenterV + 144);
+			var line1_pos4 = "@d:M " + line1_pos4_start + " " + line1_pos4_end;
+		var line1_pos5_start = jdlogo_midpoint;
+		var line1_pos5_end = (wCenterH + 55) + "," + (jdlogo_CenterV + 203);
+			var line1_pos5 = "@d:M " + line1_pos5_start + " " + line1_pos5_end;
+		var line1_pos6_start = jdlogo_midpoint;
+		var line1_pos6_end = (wCenterH + 85) + "," + (jdlogo_CenterV + 225);
+			var line1_pos6 = "@d:M " + line1_pos6_start + " " + line1_pos6_end;
+		var line1_pos7_start = jdlogo_midpoint;
+		var line1_pos7_end = (wCenterH + 12) + "," + (jdlogo_CenterV + 70);
+			var line1_pos7 = "@d:M " + line1_pos7_start + " " + line1_pos7_end;
+		var line1_pos8_start = jdlogo_midpoint;
+		var line1_pos8_end = (wCenterH - 73) + "," + (jdlogo_CenterV - 160);
+			var line1_pos8 = "@d:M " + line1_pos8_start + " " + line1_pos8_end;
+		var line1_pos9_start = jdlogo_midpoint;
+		var line1_pos9_end = wCenterH + "," + (jdlogo_CenterV - 215);
+			var line1_pos9 = "@d:M " + line1_pos9_start + " " + line1_pos9_end;
+		var line1_pos10_start = jdlogo_midpoint;
+		var line1_pos10_end = (wCenterH + 109) + "," + (jdlogo_CenterV - 202);
+			var line1_pos10 = "@d:M " + line1_pos10_start + " " + line1_pos10_end;
+		var line1_pos11_start = jdlogo_midpoint;
+		var line1_pos11_end = (wCenterH + 169) + "," + (jdlogo_CenterV - 282);
+			var line1_pos11 = "@d:M " + line1_pos11_start + " " + line1_pos11_end;
+		var line1_pos12_start = jdlogo_midpoint;
+		var line1_pos12_end = (wCenterH + 210) + "," + (jdlogo_CenterV - 360);
+			var line1_pos12 = "@d:M " + line1_pos12_start + " " + line1_pos12_end;
+		var line1_pos13_start = jdlogo_midpoint;
+		var line1_pos13_end = (wCenterH + 225) + "," + (jdlogo_CenterV - 360);
+			var line1_pos13 = "@d:M " + line1_pos13_start + " " + line1_pos13_end;
+		
+		//Line1 Set data
+		$('#bb_lines .lpath1').attr('data-0', line1_pos1);
+		$('#bb_lines .lpath1').attr('data-9400', line1_pos1);
+		$('#bb_lines .lpath1').attr('data-9900', line1_pos2);
+		$('#bb_lines .lpath1').attr('data-13900', line1_pos2);
+		$('#bb_lines .lpath1').attr('data-14500', line1_pos3);
+		$('#bb_lines .lpath1').attr('data-14900', line1_pos4);
+		$('#bb_lines .lpath1').attr('data-15400', line1_pos5);
+		$('#bb_lines .lpath1').attr('data-15600', line1_pos6);
+		$('#bb_lines .lpath1').attr('data-23200', line1_pos6);
+		$('#bb_lines .lpath1').attr('data-23600', line1_pos7);
+		$('#bb_lines .lpath1').attr('data-24000', line1_pos8);
+		$('#bb_lines .lpath1').attr('data-24500', line1_pos9);
+		$('#bb_lines .lpath1').attr('data-25400', line1_pos10);
+		$('#bb_lines .lpath1').attr('data-26200', line1_pos11);
+		$('#bb_lines .lpath1').attr('data-27000', line1_pos12);
+		$('#bb_lines .lpath1').attr('data-28200', line1_pos13);
+		
+		
+		//Line2
+		var line2_pos1_start = line1_pos2_end;
+		var line2_pos1_end = line1_pos2_end;
+			var line2_pos1 = "@d:M " + line2_pos1_start + " " + line2_pos1_end;
+		var line2_pos2_start = line1_pos2_end;
+		var line2_pos2_end = (wCenterH - 344) + "," + jdlogo_CenterV;
+			var line2_pos2 = "@d:M " + line2_pos2_start + " " + line2_pos2_end;
+		var line2_pos3_start = (wCenterH - 244 + 30.75) + "," + (jdlogo_CenterV + 19.75) ;
+		var line2_pos3_end = (wCenterH - 344) + "," + jdlogo_CenterV;
+			var line2_pos3 = "@d:M " + line2_pos3_start + " " + line2_pos3_end;
+		var line2_pos4_start = (wCenterH - 244 + 60.75) + "," + (jdlogo_CenterV + 39.75) ;
+		var line2_pos4_end = (wCenterH - 344 + 5) + "," + (jdlogo_CenterV + 10);
+			var line2_pos4 = "@d:M " + (line2_pos4_start) + " " + line2_pos4_end;
+		var line2_pos5_start = line1_pos3_end ;
+		var line2_pos5_end = (wCenterH - 344 + 28) + "," + (jdlogo_CenterV + 34);
+			var line2_pos5 = "@d:M " + line2_pos5_start + " " + line2_pos5_end;
+		var line2_pos6_start = line1_pos3_end ;
+		var line2_pos6_end = (wCenterH - 256) + "," + (jdlogo_CenterV + 54);
+			var line2_pos6 = "@d:M " + line2_pos6_start + " " + line2_pos6_end;
+		var line2_pos7_start = line1_pos4_end ;
+		var line2_pos7_end = (wCenterH - 286) + "," + (jdlogo_CenterV + 95);
+			var line2_pos7 = "@d:M " + line2_pos7_start + " " + line2_pos7_end;
+		var line2_pos8_start = line1_pos5_end ;
+		var line2_pos8_end = (wCenterH - 290) + "," + (jdlogo_CenterV + 111);
+			var line2_pos8 = "@d:M " + line2_pos8_start + " " + line2_pos8_end;
+		var line2_pos9_start = line1_pos6_end ;
+		var line2_pos9_end = (wCenterH - 290) + "," + (jdlogo_CenterV + 111);
+			var line2_pos9 = "@d:M " + line2_pos9_start + " " + line2_pos9_end;
+		var line2_pos10_start = line1_pos7_end ;
+		var line2_pos10_end = (wCenterH - 290) + "," + (jdlogo_CenterV + 73);
+			var line2_pos10 = "@d:M " + line2_pos10_start + " " + line2_pos10_end;
+		var line2_pos11_start = line1_pos8_end ;
+		var line2_pos11_end = (wCenterH - 229) + "," + (jdlogo_CenterV - 106);
+			var line2_pos11 = "@d:M " + line2_pos11_start + " " + line2_pos11_end;
+		var line2_pos12_start = line1_pos9_end ;
+		var line2_pos12_end = (wCenterH - 126) + "," + (jdlogo_CenterV - 150);
+			var line2_pos12 = "@d:M " + line2_pos12_start + " " + line2_pos12_end;
+		var line2_pos13_start = line1_pos10_end ;
+		var line2_pos13_end = (wCenterH - 279) + "," + (jdlogo_CenterV - 176);
+			var line2_pos13 = "@d:M " + line2_pos13_start + " " + line2_pos13_end;
+		var line2_pos14_start = line1_pos11_end ;
+		var line2_pos14_end = (wCenterH - 390) + "," + (jdlogo_CenterV - 294);
+			var line2_pos14 = "@d:M " + line2_pos14_start + " " + line2_pos14_end;
+		var line2_pos15_start = line1_pos12_end ;
+		var line2_pos15_end = (wCenterH - 660) + "," + (jdlogo_CenterV - 363);
+			var line2_pos15 = "@d:M " + line2_pos15_start + " " + line2_pos15_end;
+		var line2_pos16_start = line1_pos13_end ;
+		var line2_pos16_end = (wCenterH - 470) + "," + (jdlogo_CenterV - 495);
+			var line2_pos16 = "@d:M " + line2_pos16_start + " " + line2_pos16_end;
+				
+		//Line2 set data
+		$('#bb_lines .lpath2').attr('data-0', line2_pos1);
+		$('#bb_lines .lpath2').attr('data-9900', line2_pos1);
+		$('#bb_lines .lpath2').attr('data-10500', line2_pos2);
+		$('#bb_lines .lpath2').attr('data-13900', line2_pos2);
+		$('#bb_lines .lpath2').attr('data-14000', line2_pos3);
+		$('#bb_lines .lpath2').attr('data-14100', line2_pos4);
+		$('#bb_lines .lpath2').attr('data-14500', line2_pos6);
+		$('#bb_lines .lpath2').attr('data-14900', line2_pos7);
+		$('#bb_lines .lpath2').attr('data-15400', line2_pos8);
+		$('#bb_lines .lpath2').attr('data-15600', line2_pos9);
+		$('#bb_lines .lpath2').attr('data-23200', line2_pos9);
+		$('#bb_lines .lpath2').attr('data-23600', line2_pos10);
+		$('#bb_lines .lpath2').attr('data-24000', line2_pos11);
+		$('#bb_lines .lpath2').attr('data-24500', line2_pos12);
+		$('#bb_lines .lpath2').attr('data-25400', line2_pos13);
+		$('#bb_lines .lpath2').attr('data-26200', line2_pos14);
+		$('#bb_lines .lpath2').attr('data-27000', line2_pos15);
+		$('#bb_lines .lpath2').attr('data-28200', line2_pos16);
+		
+		
+		//Line2 - Midpoint
+		var line2m_pos1_start = jdlogo_midpoint;
+		var line2m_pos1_end = line2_pos2_end;
+			var line2m_pos1 = "@d:M " + line2m_pos1_start + " " + line2m_pos1_end;
+		var line2m_pos2_start = jdlogo_midpoint;
+		var line2m_pos2_end = line2_pos3_end;
+			var line2m_pos2 = "@d:M " + line2m_pos2_start + " " + line2m_pos2_end;
+		var line2m_pos3_start = jdlogo_midpoint;
+		var line2m_pos3_end = line2_pos4_end;
+			var line2m_pos3 = "@d:M " + line2m_pos3_start + " " + line2m_pos3_end;
+		var line2m_pos4_start = jdlogo_midpoint;
+		var line2m_pos4_end = line2_pos5_end;
+			var line2m_pos4 = "@d:M " + line2m_pos4_start + " " + line2m_pos4_end;
+		var line2m_pos5_start = jdlogo_midpoint;
+		var line2m_pos5_end = line2_pos6_end;
+			var line2m_pos5 = "@d:M " + line2m_pos5_start + " " + line2m_pos5_end;
+		var line2m_pos6_start = jdlogo_midpoint;
+		var line2m_pos6_end = line2_pos7_end;
+			var line2m_pos6 = "@d:M " + line2m_pos6_start + " " + line2m_pos6_end;
+		var line2m_pos7_start = jdlogo_midpoint;
+		var line2m_pos7_end = line2_pos8_end;
+			var line2m_pos7 = "@d:M " + line2m_pos7_start + " " + line2m_pos7_end;
+		var line2m_pos8_start = jdlogo_midpoint;
+		var line2m_pos8_end = line2_pos9_end;
+			var line2m_pos8 = "@d:M " + line2m_pos8_start + " " + line2m_pos8_end;
+		var line2m_pos9_start = jdlogo_midpoint;
+		var line2m_pos9_end = line2_pos10_end;
+			var line2m_pos9 = "@d:M " + line2m_pos9_start + " " + line2m_pos9_end;
+		var line2m_pos10_start = jdlogo_midpoint;
+		var line2m_pos10_end = line2_pos11_end;
+			var line2m_pos10 = "@d:M " + line2m_pos10_start + " " + line2m_pos10_end;
+		var line2m_pos11_start = jdlogo_midpoint;
+		var line2m_pos11_end = line2_pos12_end;
+			var line2m_pos11 = "@d:M " + line2m_pos11_start + " " + line2m_pos11_end;
+		var line2m_pos12_start = jdlogo_midpoint;
+		var line2m_pos12_end = line2_pos13_end;
+			var line2m_pos12 = "@d:M " + line2m_pos12_start + " " + line2m_pos12_end;
+		var line2m_pos13_start = jdlogo_midpoint;
+		var line2m_pos13_end = line2_pos14_end;
+			var line2m_pos13 = "@d:M " + line2m_pos13_start + " " + line2m_pos13_end;
+		var line2m_pos14_start = jdlogo_midpoint;
+		var line2m_pos14_end = line2_pos15_end;
+			var line2m_pos14 = "@d:M " + line2m_pos14_start + " " + line2m_pos14_end;
+		var line2m_pos15_start = jdlogo_midpoint;
+		var line2m_pos15_end = line2_pos16_end;
+			var line2m_pos15 = "@d:M " + line2m_pos15_start + " " + line2m_pos15_end;
+			
+		
+		$('#bb_lines .lpath2_m').attr('data-0', "display:none;" + line2m_pos1);
+		$('#bb_lines .lpath2_m').attr('data-12000', "display:block;" + line2m_pos1);
+		$('#bb_lines .lpath2_m').attr('data-14000', "display:block;" + line2m_pos2);
+		$('#bb_lines .lpath2_m').attr('data-14100', "display:block;" + line2m_pos3);
+		$('#bb_lines .lpath2_m').attr('data-14500', "display:block;" + line2m_pos5);
+		$('#bb_lines .lpath2_m').attr('data-14900', "display:block;" + line2m_pos6);
+		$('#bb_lines .lpath2_m').attr('data-15400', "display:block;" + line2m_pos7);
+		$('#bb_lines .lpath2_m').attr('data-15600', "display:block;" + line2m_pos8);
+		$('#bb_lines .lpath2_m').attr('data-23200', "display:block;" + line2m_pos8);
+		$('#bb_lines .lpath2_m').attr('data-23600', "display:block;" + line2m_pos9);
+		$('#bb_lines .lpath2_m').attr('data-24000', "display:block;" + line2m_pos10);
+		$('#bb_lines .lpath2_m').attr('data-24500', "display:block;" + line2m_pos11);
+		$('#bb_lines .lpath2_m').attr('data-25400', "display:block;" + line2m_pos12);
+		$('#bb_lines .lpath2_m').attr('data-26200', "display:block;" + line2m_pos13);
+		$('#bb_lines .lpath2_m').attr('data-27000', "display:block;" + line2m_pos14);
+		$('#bb_lines .lpath2_m').attr('data-28200', "display:block;" + line2m_pos15);
+		
+		
+		//Line3
+		var line3_pos1_start = jdlogo_midpoint;
+		var line3_pos1_end = jdlogo_midpoint;
+			var line3_pos1 = "@d:M " + line3_pos1_start + " " + line3_pos1_end;
+		var line3_pos2_start = jdlogo_midpoint;
+		var line3_pos2_end = (wCenterH + 110) + "," + jdlogo_CenterV;
+			var line3_pos2 = "@d:M " + line3_pos2_start + " " + line3_pos2_end;
+		var line3_pos3_start = jdlogo_midpoint;
+		var line3_pos3_end = (wCenterH + 110) + "," + jdlogo_CenterV;
+			var line3_pos3 = "@d:M " + line3_pos3_start + " " + line3_pos3_end;
+		var line3_pos4_start = jdlogo_midpoint;
+		var line3_pos4_end = (wCenterH + 157) + "," + jdlogo_CenterV;
+			var line3_pos4 = "@d:M " + line3_pos4_start + " " + line3_pos4_end;
+		var line3_pos5_start = jdlogo_midpoint;
+		var line3_pos5_end = (wCenterH + 201) + "," + (jdlogo_CenterV - 6);
+			var line3_pos5 = "@d:M " + line3_pos5_start + " " + line3_pos5_end;
+		var line3_pos6_start = jdlogo_midpoint;
+		var line3_pos6_end = (wCenterH + 220) + "," + (jdlogo_CenterV - 6);
+			var line3_pos6 = "@d:M " + line3_pos6_start + " " + line3_pos6_end;
+		var line3_pos7_start = jdlogo_midpoint;
+		var line3_pos7_end = (wCenterH + 300) + "," + (jdlogo_CenterV + 43);
+			var line3_pos7 = "@d:M " + line3_pos7_start + " " + line3_pos7_end;
+		var line3_pos8_start = jdlogo_midpoint;
+		var line3_pos8_end = (wCenterH + 320) + "," + (jdlogo_CenterV + 87);
+			var line3_pos8 = "@d:M " + line3_pos8_start + " " + line3_pos8_end;
+		var line3_pos9_start = jdlogo_midpoint;
+		var line3_pos9_end = (wCenterH + 430) + "," + (jdlogo_CenterV + 127);
+			var line3_pos9 = "@d:M " + line3_pos9_start + " " + line3_pos9_end;
+		var line3_pos10_start = jdlogo_midpoint;
+		var line3_pos10_end = (wCenterH + 430) + "," + (jdlogo_CenterV + 127);
+			var line3_pos10 = "@d:M " + line3_pos10_start + " " + line3_pos10_end;
+		var line3_pos11_start = jdlogo_midpoint;
+		var line3_pos11_end = (wCenterH + 430) + "," + (jdlogo_CenterV + 127);
+			var line3_pos11 = "@d:M " + line3_pos11_start + " " + line3_pos11_end;
+		var line3_pos12_start = jdlogo_midpoint;
+		var line3_pos12_end = (wCenterH + 588) + "," + (jdlogo_CenterV + 150);
+			var line3_pos12 = "@d:M " + line3_pos12_start + " " + line3_pos12_end;
+		var line3_pos13_start = jdlogo_midpoint;
+		var line3_pos13_end = (wCenterH + 745) + "," + (jdlogo_CenterV + 183);
+			var line3_pos13 = "@d:M " + line3_pos13_start + " " + line3_pos13_end;
+				
+		//Line3 set data
+		$('#bb_lines .lpath3').attr('data-0', line3_pos1);
+		$('#bb_lines .lpath3').attr('data-13000', line3_pos1);
+		$('#bb_lines .lpath3').attr('data-13600', line3_pos2);
+		$('#bb_lines .lpath3').attr('data-14500', line3_pos3);
+		$('#bb_lines .lpath3').attr('data-14900', line3_pos4);
+		$('#bb_lines .lpath3').attr('data-15400', line3_pos5);
+		$('#bb_lines .lpath3').attr('data-15600', line3_pos6);
+		$('#bb_lines .lpath3').attr('data-23200', line3_pos6);
+		$('#bb_lines .lpath3').attr('data-23600', line3_pos7);
+		$('#bb_lines .lpath3').attr('data-24000', line3_pos8);
+		$('#bb_lines .lpath3').attr('data-24500', line3_pos9);
+		$('#bb_lines .lpath3').attr('data-25400', line3_pos10);
+		$('#bb_lines .lpath3').attr('data-26200', line3_pos11);
+		$('#bb_lines .lpath3').attr('data-27000', line3_pos12);
+		$('#bb_lines .lpath3').attr('data-28200', line3_pos13);
+		
+		
+		//Line C2 - C1
+		var linec21_pos1_start = line2_pos2_end;
+		var linec21_pos1_end = line3_pos2_end;
+			var linec21_pos1 = "@d:M " + linec21_pos1_start + " " + linec21_pos1_end;
+		var linec21_pos2_start = line2_pos4_end;
+		var linec21_pos2_end = line3_pos2_end;
+			var linec21_pos2 = "@d:M " + linec21_pos2_start + " " + linec21_pos2_end;
+		var linec21_pos3_start = line2_pos5_end;
+		var linec21_pos3_end = line3_pos3_end;
+			var linec21_pos3 = "@d:M " + linec21_pos3_start + " " + linec21_pos3_end;
+		var linec21_pos4_start = line2_pos6_end;
+		var linec21_pos4_end = line3_pos3_end;
+			var linec21_pos4 = "@d:M " + linec21_pos4_start + " " + linec21_pos4_end;
+		var linec21_pos5_start = line2_pos7_end;
+		var linec21_pos5_end = line3_pos4_end;
+			var linec21_pos5 = "@d:M " + linec21_pos5_start + " " + linec21_pos5_end;
+		var linec21_pos6_start = line2_pos8_end;
+		var linec21_pos6_end = line3_pos5_end;
+			var linec21_pos6 = "@d:M " + linec21_pos6_start + " " + linec21_pos6_end;
+		var linec21_pos7_start = line2_pos9_end;
+		var linec21_pos7_end = line3_pos6_end;
+			var linec21_pos7 = "@d:M " + linec21_pos7_start + " " + linec21_pos7_end;
+		var linec21_pos8_start = line2_pos10_end;
+		var linec21_pos8_end = line3_pos7_end;
+			var linec21_pos8 = "@d:M " + linec21_pos8_start + " " + linec21_pos8_end;
+		var linec21_pos9_start = line2_pos11_end;
+		var linec21_pos9_end = line3_pos8_end;
+			var linec21_pos9 = "@d:M " + linec21_pos9_start + " " + linec21_pos9_end;
+		var linec21_pos10_start = line2_pos12_end;
+		var linec21_pos10_end = line3_pos9_end;
+			var linec21_pos10 = "@d:M " + linec21_pos10_start + " " + linec21_pos10_end;
+		var linec21_pos11_start = line2_pos13_end;
+		var linec21_pos11_end = line3_pos10_end;
+			var linec21_pos11 = "@d:M " + linec21_pos11_start + " " + linec21_pos11_end;
+		var linec21_pos12_start = line2_pos14_end;
+		var linec21_pos12_end = line3_pos11_end;
+			var linec21_pos12 = "@d:M " + linec21_pos12_start + " " + linec21_pos12_end;
+		var linec21_pos13_start = line2_pos15_end;
+		var linec21_pos13_end = line3_pos12_end;
+			var linec21_pos13 = "@d:M " + linec21_pos13_start + " " + linec21_pos13_end;
+		var linec21_pos14_start = line2_pos16_end;
+		var linec21_pos14_end = line3_pos13_end;
+			var linec21_pos14 = "@d:M " + linec21_pos14_start + " " + linec21_pos14_end;
+				
+		//Line C2 - C1 set data
+		$('#bb_lines .lpath2_1').attr('data-0', "display:none;" + linec21_pos1);
+		$('#bb_lines .lpath2_1').attr('data-14000', "display:block;" +  linec21_pos1);
+		$('#bb_lines .lpath2_1').attr('data-14100', "display:block;" +  linec21_pos2);
+		$('#bb_lines .lpath2_1').attr('data-14500', "display:block;" +  linec21_pos4);
+		$('#bb_lines .lpath2_1').attr('data-14900', "display:block;" +  linec21_pos5);
+		$('#bb_lines .lpath2_1').attr('data-15400', "display:block;" +  linec21_pos6);
+		$('#bb_lines .lpath2_1').attr('data-15600', "display:block;" +  linec21_pos7);
+		$('#bb_lines .lpath2_1').attr('data-23200', "display:block;" +  linec21_pos7);
+		$('#bb_lines .lpath2_1').attr('data-23600', "display:block;" +  linec21_pos8);
+		$('#bb_lines .lpath2_1').attr('data-24000', "display:block;" +  linec21_pos9);
+		$('#bb_lines .lpath2_1').attr('data-24500', "display:block;" +  linec21_pos10);
+		$('#bb_lines .lpath2_1').attr('data-25400', "display:block;" +  linec21_pos11);
+		$('#bb_lines .lpath2_1').attr('data-26200', "display:block;" +  linec21_pos12);
+		$('#bb_lines .lpath2_1').attr('data-27000', "display:block;" +  linec21_pos13);
+		$('#bb_lines .lpath2_1').attr('data-28200', "display:block;" +  linec21_pos14);
+		
+		
+		//Line C3 - C1
+		var linec31_pos1_start = line1_pos2_end;
+		var linec31_pos1_end = line3_pos2_end;
+			var linec31_pos1 = "@d:M " + linec31_pos1_start + " " + linec31_pos1_end;
+		var linec31_pos2_start = line1_pos3_end;
+		var linec31_pos2_end = line3_pos3_end;
+			var linec31_pos2 = "@d:M " + linec31_pos2_start + " " + linec31_pos2_end;
+		var linec31_pos3_start = line1_pos4_end;
+		var linec31_pos3_end = line3_pos4_end;
+			var linec31_pos3 = "@d:M " + linec31_pos3_start + " " + linec31_pos3_end;
+		var linec31_pos4_start = line1_pos5_end;
+		var linec31_pos4_end = line3_pos5_end;
+			var linec31_pos4 = "@d:M " + linec31_pos4_start + " " + linec31_pos4_end;
+		var linec31_pos5_start = line1_pos6_end;
+		var linec31_pos5_end = line3_pos6_end;
+			var linec31_pos5 = "@d:M " + linec31_pos5_start + " " + linec31_pos5_end;
+		var linec31_pos6_start = line1_pos7_end;
+		var linec31_pos6_end = line3_pos7_end;
+			var linec31_pos6 = "@d:M " + linec31_pos6_start + " " + linec31_pos6_end;
+		var linec31_pos7_start = line1_pos8_end;
+		var linec31_pos7_end = line3_pos8_end;
+			var linec31_pos7 = "@d:M " + linec31_pos7_start + " " + linec31_pos7_end;
+		var linec31_pos8_start = line1_pos9_end;
+		var linec31_pos8_end = line3_pos9_end;
+			var linec31_pos8 = "@d:M " + linec31_pos8_start + " " + linec31_pos8_end;
+		var linec31_pos9_start = line1_pos10_end;
+		var linec31_pos9_end = line3_pos10_end;
+			var linec31_pos9 = "@d:M " + linec31_pos9_start + " " + linec31_pos9_end;
+		var linec31_pos10_start = line1_pos11_end;
+		var linec31_pos10_end = line3_pos11_end;
+			var linec31_pos10 = "@d:M " + linec31_pos10_start + " " + linec31_pos10_end;
+		var linec31_pos11_start = line1_pos12_end;
+		var linec31_pos11_end = line3_pos12_end;
+			var linec31_pos11 = "@d:M " + linec31_pos11_start + " " + linec31_pos11_end;
+		var linec31_pos12_start = line1_pos13_end;
+		var linec31_pos12_end = line3_pos13_end;
+			var linec31_pos12 = "@d:M " + linec31_pos12_start + " " + linec31_pos12_end;
+				
+		//Line C3 - C1 set data
+		$('#bb_lines .lpath3_1').attr('data-0', "display:none;" + linec31_pos1);
+		$('#bb_lines .lpath3_1').attr('data-13900', "display:block;" +  linec31_pos1);
+		$('#bb_lines .lpath3_1').attr('data-14500', "display:block;" +  linec31_pos2);
+		$('#bb_lines .lpath3_1').attr('data-14900', "display:block;" +  linec31_pos3);
+		$('#bb_lines .lpath3_1').attr('data-15400', "display:block;" +  linec31_pos4);
+		$('#bb_lines .lpath3_1').attr('data-15600', "display:block;" +  linec31_pos5);
+		$('#bb_lines .lpath3_1').attr('data-23200', "display:block;" +  linec31_pos5);
+		$('#bb_lines .lpath3_1').attr('data-23600', "display:block;" +  linec31_pos6);
+		$('#bb_lines .lpath3_1').attr('data-24000', "display:block;" +  linec31_pos7);
+		$('#bb_lines .lpath3_1').attr('data-24500', "display:block;" +  linec31_pos8);
+		$('#bb_lines .lpath3_1').attr('data-25400', "display:block;" +  linec31_pos9);
+		$('#bb_lines .lpath3_1').attr('data-26200', "display:block;" +  linec31_pos10);
+		$('#bb_lines .lpath3_1').attr('data-27000', "display:block;" +  linec31_pos11);
+		$('#bb_lines .lpath3_1').attr('data-28200', "display:block;" +  linec31_pos12);
+		
+		
+		//console.info(line1_pos2);
+	});
+	
+		
+	
+	// Load & run skrollr
+	$.getScript( "sites/all/themes/framework/js/skrollr.min.js", function( data, textStatus, jqxhr ) {
+		/*console.log( data ); // Data returned
+		console.log( textStatus ); // Success
+		console.log( jqxhr.status ); // 200
+		console.log( "Load was performed." );*/
+	}).done(function( script, textStatus ) {
+	
+		$.getScript( "sites/all/themes/framework/js/skrollr.path.min.js", function( data, textStatus, jqxhr ) {
+		/*console.log( data ); // Data returned
+		console.log( textStatus ); // Success
+		console.log( jqxhr.status ); // 200
+		console.log( "Load was performed." );*/
+	}).done(function(script, textStatus) {
+		
+			$.getScript( "sites/all/themes/framework/js/skrollr.menu.min.js", function( data, textStatus, jqxhr ) {
+			/*console.log( data ); // Data returned
+			console.log( textStatus ); // Success
+			console.log( jqxhr.status ); // 200
+			console.log( "Load was performed." );*/
+			}).done(function( script, textStatus ) {
+					
+				var pathEasing = skrollr.easingFromPath(document.querySelector('#swallow_path_line'), {
+					weights: [,,,,,,,,,,,,,,,,,0.1]
+				});
+				
+					var s = skrollr.init({
+						smoothScrolling: true,
+						smoothScrollingDuration:600,
+						easing: {
+							pathx: pathEasing.x,
+							pathy: pathEasing.y,
+							angle: pathEasing.angle,
+							//easeOutQuad: function (t) { return t*(2-t) },
+						},
+						edgeStrategy: 'cubic',
+					});
+					
+					$('.start-but').click(function(e){
+						var page_pos = $(document).scrollTop();
+						var page_height = $('body').height();
+						animation = 1;
+						
+						$('#anim-menu .start-but').hide();						
+						$(".pause-but").show();
+						$("body, html").animate( { scrollTop: page_height } , Math.abs(page_pos - page_height) * scroll_speed_normal);
+					});
+					
+					$('.pause-but').click(function(e){
+						$("*").stop(true, false);
+						animation = 0;
+						scroll_speedup = 0;						
+						$(this).hide();
+						$('#anim-menu .start-but').show();						
+					});
+					
+					$('.replay-but').click(function(e){
+						animation = 0;
+						scroll_speedup = 0;				
+						
+						$('#anim-menu .start-but').show();						
+						$(".pause-but").hide();
+						$(this).hide();
+					});
+					
+					skrollr.menu.init(s, {
+						//skrollr will smoothly animate to the new position using `animateTo`.
+						animate: true,
+
+						//The easing function to use.
+						easing: 'linear',
+
+						//How long the animation should take in ms.
+						duration: function(currentTop, targetTop) {
+						//console.info('duration', currentTop , targetTop);
+							//By default, the duration is hardcoded at 500ms.
+							//return 500;
+							//console.info(Math.abs(currentTop - targetTop));
+							
+							//$url = window.location.hash;
+							//$url_hash = $url.substring($url.indexOf('#'));
+							
+							//console.info($url);
+								//But you could calculate a value based on the current scroll position (`currentTop`) and the target scroll position (`targetTop`).
+								/*$('#replay').click(function(){
+									console.info('re');
+									return Math.abs(currentTop - targetTop) * 0.7;
+									console.info()
+								});*/
+								
+								if(targetTop == 0) {
+									//console.info('start');
+									return -42800;									
+								} else {
+									return Math.abs(currentTop - targetTop) * 2.4;									
+								}
+								//console.info(Math.abs("scroll" + currentTop - targetTop) * 3);
+
+							
+						},
+					});
+				
+			});
+		
+		});
+  });
+	
+	
+	
+	// Load & run skrollr
+	
+	
+	
+	//var speed = parseInt(Math.random() * 10);
+	
+	
+	/*var sx = parseInt((Math.cos(rads) * 100));
+	var sy = parseInt((Math.sin(rads) * 100));
+	
+	var ex = parseInt((Math.cos(rads) * 100));
+	var ey = parseInt((Math.sin(rads) * 100));*/
+	
+	
+
+	
+	
+	
+	
+	// Starting coordinates
+       /* var sx = parseInt((Math.cos(rads) * (_options.radius + _margin)) + _options.offset[0] - _margin);
+        var sy = parseInt((Math.sin(rads) * (_options.radius + _margin)) + _options.offset[1] - _margin);*/
+	
+	//console.info("distance:" +distance_x+ " " +distance_y+ ", speed: "+speed+", rads: " + rads + ", sx: " + sx + ", sy: " + sy );
+	
+	//$('#test').attr('data-20600', "display:block; margin-top:" +  d_y + "; margin-left:" + d_x + "; width:" + cs_radius + "; height:" + cs_radius);
+	
+	var distance_x = parseInt(Math.random() * winWidth);
+			var distance_y = parseInt(Math.random() * winHeight);
+			var rads = (Math.random() * 360);
+			var cs_radius = Math.floor(Math.random() * (22 - 8 + 1)) + 8;
+			var ce_radius = Math.floor(Math.random() * (42 - cs_radius + 1)) + cs_radius;
+			var  colors = Array("#f0d100","#ca1717","#000000","#40861a","#162a81");
+				var color = colors[Math.floor(colors.length * Math.random())];
+			
+			var d_x = 0;
+			var d_y = 0;
+			
+			if(rads < 90) {
+				d_x = 0 + distance_x;
+				d_y = 0 - distance_y;
+			} else if (rads >= 90 && rads < 180)  {
+				d_x = 0 + distance_x;
+				d_y = 0 + distance_y;
+			} else if (rads >= 180 && rads < 270)  {
+				d_x = 0 - distance_x;
+				d_y = 0 + distance_y;
+			} else if (rads >= 270 && rads <= 360)  {
+				d_x = 0 - distance_x;
+				d_y = 0 - distance_y;
+			}
+			
+			//$('#test').attr('data-20600', "display:block; margin-top:" +  d_y + "; margin-left:" + d_x + "; width:" + cs_radius + "; height:" + cs_radius);
+	
+	for ( var i = 0; i < 20; i++ ) {
+	
+			var distance_x = parseInt(Math.random() * winWidth);
+			var distance_y = parseInt(Math.random() * winHeight);
+			var rads = (Math.random() * 360);
+			var cs_radius = Math.floor(Math.random() * (22 - 8 + 1)) + 8;
+			var ce_radius = Math.floor(Math.random() * (42 - cs_radius + 1)) + cs_radius;
+			var colors = Array("#f0d100","#ca1717","#000000","#40861a","#162a81");
+				var color = colors[Math.floor(colors.length * Math.random())];
+			
+			var d_x = 0;
+			var d_y = 0;
+			
+			
+			if(rads < 90) {
+				d_x = 0 + distance_x;
+				d_y = 0 - distance_y;
+			} else if (rads >= 90 && rads < 180)  {
+				d_x = 0 + distance_x;
+				d_y = 0 + distance_y;
+			} else if (rads >= 180 && rads < 270)  {
+				d_x = 0 - distance_x;
+				d_y = 0 + distance_y;
+			} else if (rads >= 270 && rads <= 360)  {
+				d_x = 0 - distance_x;
+				d_y = 0 - distance_y;
+			}
+			
+		$('#blast_wrapper').append("<div class='blast_circle circle-"+i+"' style='background-color:"+color+"; width:" + cs_radius + "px; height:" + cs_radius + "px;'></div>");
+				$("#blast_wrapper").find(".circle-"+i).attr('data-0', "display:block; margin-top:75px; margin-left:420px; width:" + cs_radius + "px; height:" + cs_radius + "px;");
+				$("#blast_wrapper").find(".circle-"+i).attr('data-26200', "display:block; margin-top:75px; margin-left:420px; width:" + cs_radius + "px; height:" + cs_radius + "px;");
+				$("#blast_wrapper").find(".circle-"+i).attr('data-28200', "display:block; margin-top:" +  d_y + "; margin-left:" + d_x + "; width:" + ce_radius + "px; height:" + ce_radius +"px;");
+			
+			//console.log( "try " + i );
+	}
+	
+	
+	//$('#outro').attr('data-21800', "display:block; margin-top:-" +  (winHeight) + "px; margin-left:-" + (winWidth / 2) + "px; width:" + (winWidth - 200) + "px; height:" + (winWidth - 200) + "px;");
+	//$('#print_lines').attr('data-21800', "display:block; margin-top:-" +  (winHeight) + "px; margin-left:-" + (winWidth / 2) + "px; width:" + winWidth + "px; height:" + winWidth + "px;");
+	
+	var winArray = [winWidth,winHeight];
+	var warpper_max = Math.max.apply(Math, winArray);
+	var warpper_size = (warpper_max / 1.5) + warpper_max;
+	var warpper_size2 = (warpper_max * 10) + warpper_max;
+	var warpper_posx = (warpper_max * 4.12);
+	var warpper_posy = (warpper_max * 3.5);
+	
+	$('#full_page_wrapper').css({'width' : warpper_size, 'height' : warpper_size, 'margin-top' : -(warpper_size / 2), 'margin-left' : -(warpper_size / 2)});
+	$('#scene3-wrapper').css({'width' : warpper_size, 'height' : warpper_size, 'margin-top' : -((warpper_size / 2) + 30), 'margin-left' : -(warpper_size / 2)});
+	
+	//var jd_world_center = (warpper_size / 2) - 61;
+	var jd_world_center = 61;
+	//var jd_world_pos1_y = ((warpper_size - winHeight) / 2) - 122;
+	var jd_world_pos1_y = ( winHeight / 2) + 122;
+	//var jd_world_pos2_y = jd_world_center - 160;
+	var jd_world_pos2_y = 211;
+	var jd_world_pos2_y = 211;
+	var jd_world_pos1_y = ( winHeight / 2) + 122;
+	
+	
+	/*$('#jd_world').attr('data-0', "display:none; top:50%; left:50%; margin-top:"+jd_world_pos1_y+"px; margin-left:"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-999', "display:block; top:50%; left:50%; margin-top:"+jd_world_pos1_y+"px; margin-left:"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-1000', "display:block; top:50%; left:50%; margin-top:"+jd_world_pos1_y+"px; margin-left:"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-2000', "display:block; top:50%; left:50%; margin-top:"+jd_world_pos2_y+"px; margin-left:"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-7400', "display:block; top:50%; left:50%; margin-top:"+jd_world_pos2_y+"px; margin-left:"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-8500', "display:block; top:0%; left:0%; margin-top:0px; margin-left:0px; width:"+warpper_size+"px; height:"+warpper_size+"px;");*/
+	
+	$('#jd_world').attr('data-0', "display:none; opacity:1; top:50%; left:50%; margin-top:-"+jd_world_pos1_y+"px; margin-left:-"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-999', "display:block; opacity:1; top:50%; left:50%; margin-top:-"+jd_world_pos1_y+"px; margin-left:-"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-1000', "display:block; opacity:1; top:50%; left:50%; margin-top:-"+jd_world_pos1_y+"px; margin-left:-"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-2000', "display:block; opacity:1; top:50%; left:50%; margin-top:-"+jd_world_pos2_y+"px; margin-left:-"+jd_world_center+"px; width:122px; height:122px;");
+	$('#jd_world').attr('data-7400', "display:block; opacity:1; top[cubic]:50%; left[cubic]:50%; margin-top[cubic]:-"+jd_world_pos2_y+"px; margin-left[cubic]:-"+jd_world_center+"px; width[cubic]:122px; height[cubic]:122px;");
+	$('#jd_world').attr('data-8999', "display:none; opacity:1; top:0%; left:0%; margin-top:-"+warpper_posy+"px; margin-left:-"+warpper_posx+"px; width:"+warpper_size2+"px; height:"+warpper_size2+"px;");
+	$('#jd_world').attr('data-9000', "display:none; opacity:1; top:0%; left:0%; mmargin-top:-"+warpper_posy+"px; margin-left:-"+warpper_posx+"px; width:"+warpper_size2+"px; height:"+warpper_size2+"px;");
+	$('#jd_world').attr('data-36700', "display:block; opacity:1; top[swing]:0%; left[swing]:0%; margin-top[swing]:-"+warpper_posy+"px; margin-left[swing]:-"+warpper_posx+"px; width[swing]:"+warpper_size2+"px; height[swing]:"+warpper_size2+"px;");
+	//$('#jd_world').attr('data-37200', "display:block; opacity:1; top:0%; left:0%; margin-top[swing]:-"+(warpper_posy / 2)+"px; margin-left[swing]:-"+(warpper_posx / 2)+"px; width[swing]:"+(warpper_size2/2)+"px; height[swing]:"+(warpper_size2/2)+"px;");
+	//$('#jd_world').attr('data-37200', "display:block; opacity:1; top:50%; left:50%; margin-top:-"+((295*2)-(175*4))+"px; margin-left:-"+((295*2)-(380*4))+"px; width:"+(295*4)+"px; height:"+(295*4)+"px;");
+	$('#jd_world').attr('data-37700', "display:block; opacity:1; top:50%; left:50%; margin-top:-175px; margin-left:-380px; width:295px; height:295px;");
+	$('#jd_world').attr('data-40300', "display:block; opacity:1; top:50%; left:50%; margin-top:-175px; margin-left:-380px; width:295px; height:295px;");
+	$('#jd_world').attr('data-40599', "display:none; opacity:0; top:50%; left:50%; margin-top:-175px; margin-left:-380px; width:295px; height:295px;");
+	$('#jd_world').attr('data-40600', "display:none; opacity:0; top:50%; left:50%; margin-top:-175px; margin-left:-380px; width:295px; height:295px;");
+	
+	
+	var focus_midpoint = "334,175";
+	
+	// Focus Circle1 Line
+	var f_line1_pos1_start = focus_midpoint;
+	var f_line1_pos1_end = focus_midpoint;
+			var f_line1_pos1 = "@d:M " + f_line1_pos1_start + " " + f_line1_pos1_end;
+	var f_line1_pos2_start = focus_midpoint;
+	var f_line1_pos2_end = "553,175";
+			var f_line1_pos2 = "@d:M " + f_line1_pos2_start + " " + f_line1_pos2_end;
+	var f_line1_pos3_start = focus_midpoint;
+	var f_line1_pos3_end = focus_midpoint;
+			var f_line1_pos3 = "@d:M " + f_line1_pos3_start + " " + f_line1_pos3_end;
+			
+	// Focus Circle1 Line Set data
+		$('#focus_lines .lpath1').attr('data-0', f_line1_pos1);
+		$('#focus_lines .lpath1').attr('data-30500', f_line1_pos1);
+		$('#focus_lines .lpath1').attr('data-31400', f_line1_pos2);
+		$('#focus_lines .lpath1').attr('data-35500', f_line1_pos2);
+		$('#focus_lines .lpath1').attr('data-36100', f_line1_pos3);
+		
+	// Focus Circle2 Line
+	var f_line2_pos1_start = focus_midpoint;
+	var f_line2_pos1_end = focus_midpoint;
+			var f_line2_pos1 = "@d:M " + f_line2_pos1_start + " " + f_line2_pos1_end;
+	var f_line2_pos2_start = focus_midpoint;
+	var f_line2_pos2_end = "497,13";
+			var f_line2_pos2 = "@d:M " + f_line2_pos2_start + " " + f_line2_pos2_end;
+	var f_line2_pos3_start = focus_midpoint;
+	var f_line2_pos3_end = focus_midpoint;
+			var f_line2_pos3 = "@d:M " + f_line2_pos3_start + " " + f_line2_pos3_end;
+			
+	// Focus Circle1 Line Set data
+		$('#focus_lines .lpath2').attr('data-0', f_line2_pos1);
+		$('#focus_lines .lpath2').attr('data-31600', f_line2_pos1);
+		$('#focus_lines .lpath2').attr('data-32500', f_line2_pos2);
+		$('#focus_lines .lpath2').attr('data-35500', f_line2_pos2);
+		$('#focus_lines .lpath2').attr('data-36100', f_line2_pos3);
+		
+	// Focus Circle1 - Circle2
+	var f_line1_2_pos1_start = "553,175";
+	var f_line1_2_pos1_end = "553,175";
+			var f_line1_2_pos1 = "@d:M " + f_line1_2_pos1_start + " " + f_line1_2_pos1_end;
+	var f_line1_2_pos2_start = "553,175";
+	var f_line1_2_pos2_end = "497,13";
+			var f_line1_2_pos2 = "@d:M " + f_line1_2_pos2_start + " " + f_line1_2_pos2_end;
+	var f_line1_2_pos3_start = focus_midpoint;
+	var f_line1_2_pos3_end = focus_midpoint;
+			var f_line1_2_pos3 = "@d:M " + f_line1_2_pos3_start + " " + f_line1_2_pos3_end;
+			
+	// Focus Circle1 - Circle2 Set data
+		$('#focus_lines .lpath1_2').attr('data-0', f_line1_2_pos1);
+		$('#focus_lines .lpath1_2').attr('data-31600', f_line1_2_pos1);
+		$('#focus_lines .lpath1_2').attr('data-32500', f_line1_2_pos2);
+		$('#focus_lines .lpath1_2').attr('data-35500', f_line1_2_pos2);
+		$('#focus_lines .lpath1_2').attr('data-36100', f_line1_2_pos3);
+		
+	// Focus Circle3 Line
+	var f_line3_pos1_start = focus_midpoint;
+	var f_line3_pos1_end = focus_midpoint;
+			var f_line3_pos1 = "@d:M " + f_line3_pos1_start + " " + f_line3_pos1_end;
+	var f_line3_pos2_start = focus_midpoint;
+	var f_line3_pos2_end = "369,357";
+			var f_line3_pos2 = "@d:M " + f_line3_pos2_start + " " + f_line3_pos2_end;
+	var f_line3_pos3_start = focus_midpoint;
+	var f_line3_pos3_end = focus_midpoint;
+			var f_line3_pos3 = "@d:M " + f_line3_pos3_start + " " + f_line3_pos3_end;
+			
+		// Focus Circle3 Line Set data
+		$('#focus_lines .lpath3').attr('data-0', f_line3_pos1);
+		$('#focus_lines .lpath3').attr('data-32700', f_line3_pos1);
+		$('#focus_lines .lpath3').attr('data-33600', f_line3_pos2);
+		$('#focus_lines .lpath3').attr('data-35500', f_line3_pos2);
+		$('#focus_lines .lpath3').attr('data-36100', f_line3_pos3);
+		
+			// Focus Circle3 - Circle1
+			var f_line3_1_pos1_start = f_line1_2_pos1_start;
+			var f_line3_1_pos1_end = f_line1_2_pos1_start;
+					var f_line3_1_pos1 = "@d:M " + f_line3_1_pos1_start + " " + f_line3_1_pos1_end;
+			var f_line3_1_pos2_start = f_line1_2_pos1_start;
+			var f_line3_1_pos2_end = f_line3_pos2_end;
+					var f_line3_1_pos2 = "@d:M " + f_line3_1_pos2_start + " " + f_line3_1_pos2_end;
+			var f_line3_1_pos3_start = focus_midpoint;
+			var f_line3_1_pos3_end = focus_midpoint;
+					var f_line3_1_pos3 = "@d:M " + f_line3_1_pos3_start + " " + f_line3_1_pos3_end;
+					
+				// Focus Circle3 - Circle1 Line Set data
+				$('#focus_lines .lpath3_1').attr('data-0', f_line3_1_pos1);
+				$('#focus_lines .lpath3_1').attr('data-32700', f_line3_1_pos1);
+				$('#focus_lines .lpath3_1').attr('data-33600', f_line3_1_pos2);
+				$('#focus_lines .lpath3_1').attr('data-35500', f_line3_1_pos2);
+				$('#focus_lines .lpath3_1').attr('data-36100', f_line3_1_pos3);
+				
+			// Focus Circle3 - Circle2
+			var f_line3_2_pos1_start = f_line2_pos2_end;
+			var f_line3_2_pos1_end = f_line2_pos2_end;
+					var f_line3_2_pos1 = "@d:M " + f_line3_2_pos1_start + " " + f_line3_2_pos1_end;
+			var f_line3_2_pos2_start = f_line2_pos2_end;
+			var f_line3_2_pos2_end = f_line3_pos2_end;
+					var f_line3_2_pos2 = "@d:M " + f_line3_2_pos2_start + " " + f_line3_2_pos2_end;
+			var f_line3_2_pos3_start = focus_midpoint;
+			var f_line3_2_pos3_end = focus_midpoint;
+					var f_line3_2_pos3 = "@d:M " + f_line3_2_pos3_start + " " + f_line3_2_pos3_end;
+					
+				// Focus Circle3 - Circle2 Set data
+				$('#focus_lines .lpath3_2').attr('data-0', f_line3_2_pos1);
+				$('#focus_lines .lpath3_2').attr('data-32700', f_line3_2_pos1);
+				$('#focus_lines .lpath3_2').attr('data-33600', f_line3_2_pos2);
+				$('#focus_lines .lpath3_2').attr('data-35500', f_line3_2_pos2);
+				$('#focus_lines .lpath3_2').attr('data-36100', f_line3_2_pos3);
+				
+	// Focus Circle4 Line
+	var f_line4_pos1_start = focus_midpoint;
+	var f_line4_pos1_end = focus_midpoint;
+			var f_line4_pos1 = "@d:M " + f_line4_pos1_start + " " + f_line4_pos1_end;
+	var f_line4_pos2_start = focus_midpoint;
+	var f_line4_pos2_end = "13,67";
+			var f_line4_pos2 = "@d:M " + f_line4_pos2_start + " " + f_line4_pos2_end;
+	var f_line4_pos3_start = focus_midpoint;
+	var f_line4_pos3_end = focus_midpoint;
+			var f_line4_pos3 = "@d:M " + f_line4_pos3_start + " " + f_line4_pos3_end;
+			
+		// Focus Circle4 Line Set data
+		$('#focus_lines .lpath4').attr('data-0', f_line4_pos1);
+		$('#focus_lines .lpath4').attr('data-33800', f_line4_pos1);
+		$('#focus_lines .lpath4').attr('data-34700', f_line4_pos2);
+		$('#focus_lines .lpath4').attr('data-35500', f_line4_pos2);
+		$('#focus_lines .lpath4').attr('data-36100', f_line4_pos3);
+		
+				// Focus Circle4 - Circle2
+				var f_line4_2_pos1_start = f_line2_pos2_end;
+				var f_line4_2_pos1_end = f_line2_pos2_end;
+						var f_line4_2_pos1 = "@d:M " + f_line4_2_pos1_start + " " + f_line4_2_pos1_end;
+				var f_line4_2_pos2_start = f_line2_pos2_end;
+				var f_line4_2_pos2_end = f_line4_pos2_end;
+						var f_line4_2_pos2 = "@d:M " + f_line4_2_pos2_start + " " + f_line4_2_pos2_end;
+				var f_line4_2_pos3_start = focus_midpoint;
+				var f_line4_2_pos3_end = focus_midpoint;
+						var f_line4_2_pos3 = "@d:M " + f_line4_2_pos3_start + " " + f_line4_2_pos3_end;
+						
+					// Focus Circle4 - Circle2 Set data
+					$('#focus_lines .lpath4_2').attr('data-0', f_line4_2_pos1);
+					$('#focus_lines .lpath4_2').attr('data-33800', f_line4_2_pos1);
+					$('#focus_lines .lpath4_2').attr('data-34700', f_line4_2_pos2);
+					$('#focus_lines .lpath4_2').attr('data-35500', f_line4_2_pos2);
+					$('#focus_lines .lpath4_2').attr('data-36100', f_line4_2_pos3);
+					
+				// Focus Circle4 - Circle3
+				var f_line4_3_pos1_start = f_line3_pos2_end;
+				var f_line4_3_pos1_end = f_line3_pos2_end;
+						var f_line4_3_pos1 = "@d:M " + f_line4_3_pos1_start + " " + f_line4_3_pos1_end;
+				var f_line4_3_pos2_start = f_line3_pos2_end;
+				var f_line4_3_pos2_end = f_line4_pos2_end;
+						var f_line4_3_pos2 = "@d:M " + f_line4_3_pos2_start + " " + f_line4_3_pos2_end;
+				var f_line4_3_pos3_start = focus_midpoint;
+				var f_line4_3_pos3_end = focus_midpoint;
+						var f_line4_3_pos3 = "@d:M " + f_line4_3_pos3_start + " " + f_line4_3_pos3_end;
+						
+					// Focus Circle4 - Circle3 Set data
+					$('#focus_lines .lpath4_3').attr('data-0', f_line4_3_pos1);
+					$('#focus_lines .lpath4_3').attr('data-33800', f_line4_3_pos1);
+					$('#focus_lines .lpath4_3').attr('data-34700', f_line4_3_pos2);
+					$('#focus_lines .lpath4_3').attr('data-35500', f_line4_3_pos2);
+					$('#focus_lines .lpath4_3').attr('data-36100', f_line4_3_pos3);
+		
+
+
+	// Newsletter Signup
+	$('#newsletter-signup').click(function(e) {
+		e.preventDefault();
+		$('#mailchimp').addClass('open');
+	});
+
+	$('#mailchimp .close').click(function(e) {
+		e.preventDefault();
+		$('#mailchimp').removeClass('open');
+	});
+
+});
+
+$(window).load(function(){
+
+		
+		
+		if(isiPad == true) {
+			//$('#sky-wrapper').css('top', '-10px');
+		}
+
+	
+		
+		/*$('body').perfectScrollbar({
+			wheelSpeed: 30
+		});*/
+		
+	/*	$("body").scrollPath({
+				drawPath: false,
+				wrapAround: true,
+				scrollBar: true
+		});*/
+
+		/*$("#b_mask_1").particles({
+		stop:true,
+		create:true,
+		amount:10,
+		radius:{radius:10,random:true},
+		duration:{random:true},
+		speed:{speed:1},
+		layout:"after",
+		//opacity:{opacity:1,animation:false,},
+		color:{random:true}
+	}).click(function(){
+		$(this).particles("stop");
+	}).on("stateChange",function(event,state){
+		console.log(state);
+	});*/
+	
+	
+	
+	
+	/*$("#b_mask_1").click(function(){
+		if(!this.parts){
+			$(this).particles({
+				amount:10,
+				radius:{radius:10,random:true},
+				opacity:{decay:true,animation:true},
+				duration:{duration:10000,random:true,firststep:-1000},
+				speed:{speed:1.5,random:true},
+				end:"remove",
+				position:{x:0,y:0},
+				color:{color:{r:0,g:0,b:150},random:true,min:{r:255,g:255,b:255}},
+				dir:{
+					x:1,
+					y:1,
+					xrand:false,
+					yrand:true,
+					rand:true
+				},
+				create:function(){
+					console.log("created "+$(this).attr("id")+" particles");
+				}
+			});
+		}
+	}).on("create",function(){
+		console.log("on create b_mask_1");
+	}).on("removeParticle",function(){
+		if(this.parts.part.length-1==0){
+			$(this).particles("destroy");
+		}
+	});*/
+	
+	
+
+	
+	//$("#bb_lines .lpath1").attr("data-0", "");
+	/*$("#bb_lines .lpath1").attr("data-0", line1_s3_pos_1);*/
+	//$("#bb_lines .lpath1").attr("data-8900", " @d:M 834,446 834,446; @d:M 834,446 834,446;");
+	
+	
+	
+	/*
+	M 834,446 586,446
+	M 834,446 709,520
+	*/
+	function scrollToAnchor(aid){
+		var aTag = $("div[id='"+ aid +"']");
+		$('body, html').animate({scrollTop: aTag.offset().top}, 1000);
+	}
+	
+	if($('body.node-type-portfolio').length) {
+	 $('#page-title a').click(function(e) {
+			e.preventDefault();
+			var href =  $(this).attr('href').replace('#', '');
+			
+			scrollToAnchor(href);
+	 });
+	}
+	
+	/* Portfolio Menu */
+	$('ul.custom-pager-top .key').click(function() {
+		$("#block-views-portfolio-portfolios-block").fadeTo(400,1);
+	});
+	
+	$('#block-views-portfolio-portfolios-block .close-but').click(function() {
+		$("#block-views-portfolio-portfolios-block").fadeTo(400,0).hide(400);
+	});
+	
+	
+	/* services */
+	if($(".page-node-5").length) {
+		/**
+		var contentHeight = "-" + ($("#main").height() / 2) + "px";		
+		$('#main').css('margin-top' , contentHeight);
+		*/
+	}
+	
+});
+
+var speed = 0;
+
+$(window).scroll(function () {
+
+    
+	 var scroll_pos = $(window).scrollTop();
+	 var page_pos = $(document).scrollTop();
+	 var page_height = $('body').height();
+	 
+	 //console.info(scroll_pos);
+	 
+	 if(scroll_pos == 0) {
+		  $('#anim-menu .replay-but').hide();
+			$('#anim-menu .start-but').show();
+			$('#anim-menu .pause-but').hide();
+	 }
+	 
+	 
+	 /*if(scroll_pos >= 0 && scroll_pos <= 399) {
+		$('#navigation a.active').css('background-position', '0 7px');
+	 } else if(scroll_pos >= 400 && scroll_pos < 8000) {
+		$('#navigation a.active').css('background-position', '0 -12px');
+	 } else if(scroll_pos > 8000 && scroll_pos < 37600) {
+		$('#navigation a.active').css('background-position', '0 7px');
+	 } else if(scroll_pos > 37600 && scroll_pos < 41200) {
+		$('#navigation a.active').css('background-position', '0 -12px');
+	 } else if(scroll_pos > 41200) {
+		$('#navigation a.active').css('background-position', '0 7px');
+	 };*/
+	 
+	 if(scroll_pos == 42800) {
+			$('#anim-menu .replay-but').show();
+			$('#anim-menu .start-but').show();
+			$('#anim-menu .pause-but').hide();
+	 } else {
+			$('#anim-menu .replay-but').hide();
+	 }
+	 
+	 if (animation == 1) {
+
+				//Speedup
+			 if(scroll_pos >= 6500 && scroll_pos <= 9000 && scroll_speedup == 0) {
+					//console.info("speed up 1");
+					$("*").stop(true, false);
+					scroll_speedup = 1;
+					$("body, html").animate( { scrollTop: page_height } , Math.abs(page_pos - page_height) * scroll_speed_fast);
+					
+			 } else if(scroll_pos >= 15800 && scroll_pos <= 23200 && scroll_speedup == 0) {
+					//console.info("speed up 2");
+					$("*").stop(true, false);
+					scroll_speedup = 1;
+					$("body, html").animate( { scrollTop: page_height } , Math.abs(page_pos - page_height) * 4);
+			 } else if(scroll_pos >= 29000 && scroll_pos <= 36000 && scroll_speedup == 0) {
+					//console.info("speed up 3");
+					$("*").stop(true, false);
+					scroll_speedup = 1;
+					$("body, html").animate( { scrollTop: page_height } , Math.abs(page_pos - page_height) * 4);
+			 }
+			 
+			 //Speedown
+			 if(scroll_pos > 9000 && scroll_pos < 15800 && scroll_speedup == 1) {
+					$("*").stop(true, false);
+					scroll_speedup = 0;
+					$("body, html").animate( { scrollTop: page_height } , Math.abs(page_pos - page_height) * scroll_speed_normal);
+					
+			 } else if(scroll_pos > 23200 && scroll_pos < 29000 && scroll_speedup == 1) {
+					$("*").stop(true, false);
+					scroll_speedup = 0;
+					$("body, html").animate( { scrollTop: page_height } , Math.abs(page_pos - page_height) * scroll_speed_normal);
+			 } else if(scroll_pos > 36000 && scroll_speedup == 1) {
+					$("*").stop(true, false);
+					scroll_speedup = 0;
+					$("body, html").animate( { scrollTop: page_height } , Math.abs(page_pos - page_height) * scroll_speed_normal);
+			 }
+			 
+			 //end of document
+			 if(scroll_pos == 42800) {
+				$("*").stop(true, false);
+				animation = 0;
+				scroll_speedup = 0;		
+			 }
+		}
+	 
+	/* if(scroll_pos == 500) {
+			alert("Width with scrollbars: " + $(window).width() + ", Height with scrollbars: " + $(window).height());
+	 }*/
+	 
+});
+
+$(window).resize(function() {
+  //update stuff
+});
+})(jQuery);

@@ -1,0 +1,41 @@
+(function($) {
+
+function content_position()
+{
+	var wh = $(window).height(),
+			ch = $('.center-vertically').outerHeight(),
+			top = Math.round((wh - ch) / 2);
+	
+	var css = {
+		'padding-top' : 0,
+		'top' : top
+	};
+	
+	$('.center-vertically').css(css);
+}
+
+$(document).ready(function()
+{
+	if ($('.center-vertically').length)
+	{
+		content_position();
+	}
+	
+	if ($('#navigation .active-trail').length)
+	{
+		$('#navigation .active-trail').click(function(e)
+		{
+			e.preventDefault();
+		});
+	}
+});
+
+$(window).resize(function()
+{
+	if ($('.center-vertically').length)
+	{
+		content_position();
+	}
+});
+
+})(jQuery);

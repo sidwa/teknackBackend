@@ -1,0 +1,54 @@
+(function($) {
+
+function resize_portfolio_images()
+{
+	var ww = $(window).width(),
+			wh = $(window).height(),
+			ar = 1280 / 800,
+			dh = Math.round(ww / ar);
+			
+	var css = {
+		'width' : ww,
+		'height' : dh
+	};
+			
+	$('.node-type-portfolio #main .portfolio-img').css(css);
+	$('.node-type-portfolio .content-wrapper').css('margin-top', wh);
+}
+
+$(document).ready(function()
+{
+
+	if ($('a.inactive').length)
+	{
+		$('a.inactive').unbind('click');
+		$('a.inactive').click(function(e)
+		{
+			e.preventDefault();
+		});
+	}
+	
+	if ($('body').is('.node-type-portfolio'))
+	{
+		resize_portfolio_images();
+	}
+
+});
+
+$(window).load(function()
+{
+	if ($('body').is('.node-type-portfolio'))
+	{
+		resize_portfolio_images();
+	}
+});
+
+$(window).resize(function()
+{
+	if ($('body').is('.node-type-portfolio'))
+	{
+		resize_portfolio_images();
+	}
+});
+
+})(jQuery);

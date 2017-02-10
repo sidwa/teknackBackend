@@ -1,0 +1,177 @@
+(function($) {
+
+Drupal.preloader = {};
+
+ $.fn.animateProgress = function(progress, duration, callback)
+ {
+	return this.each(function() {
+		$(this).animate({
+			width: progress + '%'
+		}, {
+			duration: duration, 
+			
+			// swing or linear
+			easing: 'swing',
+
+			// this gets called every step of the animation, and updates the label
+			step: function( progress ){
+			},
+			complete: function(scope, i, elem) {
+				if (callback) {
+					callback.call(this, i, elem );
+				};
+			}
+		});
+	});
+};
+
+Drupal.preloader.progress_finished = function()
+{
+	$('#progress_bar .ui-progress').animateProgress(100, 50, function()
+	{
+		$('#wrapper-main').css('opacity', 1);
+		$('#page-preloader-wrapper').fadeOut(200);
+	});
+};
+
+function progress_update(p)
+{
+	for (var i = 0; i < 5; i++)
+	{
+	
+	}
+	if (Drupal.preloader.progress_done == false)
+	{
+		p = p + 5;
+		$('#progress_bar .ui-progress').animateProgress(p, progress_update(p), Drupal.preloader.progress_done);
+	}
+}
+
+Drupal.preloader.get_duration = function(offset)
+{
+	var v = offset + Math.floor(Math.random() * 200);
+	return v;
+};
+
+Drupal.preloader.progress_done = false;
+
+var p = 0;
+		
+$(document).ready(function()
+{
+	if ($('#progress_bar').length)
+	{
+		var wh = $(window).height(),
+				pbt = Math.round(wh / 2),
+				offset = 0;
+				
+		if ($('body').is('.front'))
+		{
+			offset = 800;
+		}
+		
+		$('#progress_bar').css('top', pbt);
+		
+		$('#progress_bar .ui-progress .ui-label').fadeTo(500, 0, function(){
+			$(this).hide();
+		});
+		$('#progress_bar .ui-progress').css('width', '1%');
+		
+		$('#progress_bar').show().fadeIn(250, 1);
+		
+		/** What follows is terrible, and needs to be cleaned up at some point */
+		/** Urgh, seriously */
+		
+		$('#progress_bar .ui-progress').animateProgress(10, Drupal.preloader.get_duration(offset), function()
+		{
+			if (Drupal.preloader.progress_done == false)
+			{
+				$('#progress_bar .ui-progress').animateProgress(20, Drupal.preloader.get_duration(offset), function()
+				{
+					if (Drupal.preloader.progress_done == false)
+					{
+						$('#progress_bar .ui-progress').animateProgress(30, Drupal.preloader.get_duration(offset), function()
+						{
+							if (Drupal.preloader.progress_done == false)
+							{
+								$('#progress_bar .ui-progress').animateProgress(40, Drupal.preloader.get_duration(offset), function()
+								{
+									if (Drupal.preloader.progress_done == false)
+									{
+										$('#progress_bar .ui-progress').animateProgress(50, Drupal.preloader.get_duration(offset), function()
+										{
+											if (Drupal.preloader.progress_done == false)
+											{
+												$('#progress_bar .ui-progress').animateProgress(60, Drupal.preloader.get_duration(offset), function()
+												{
+													if (Drupal.preloader.progress_done == false)
+													{
+														$('#progress_bar .ui-progress').animateProgress(70, Drupal.preloader.get_duration(offset), function()
+														{
+															if (Drupal.preloader.progress_done == false)
+															{
+																$('#progress_bar .ui-progress').animateProgress(80, Drupal.preloader.get_duration(offset), function()
+																{
+																	if (Drupal.preloader.progress_done == false)
+																	{
+																		$('#progress_bar .ui-progress').animateProgress(90, Drupal.preloader.get_duration(offset), function()
+																		{
+																			Drupal.preloader.progress_done = true;
+																			Drupal.preloader.progress_finished();
+																		});
+																	};
+																});
+															}
+														});
+													}
+												});
+											}
+										});
+									}
+								});
+							}
+						});
+					}
+				});
+			}			
+		});
+	}
+});
+
+$(window).load(function()
+{
+	
+	if ($('body').is('front') == false)
+	{
+		var intervalID;
+		
+		var intervalID = setInterval(
+			function()
+			{
+				/** Check if the front page is fully loaded yet */
+				if ($('body').height() > 5000)
+				{
+					clearInterval(intervalID);
+					
+					Drupal.preloader.progress_done = true;
+					Drupal.preloader.progress_finished();
+				}
+			}, 500);
+	} else
+	{
+		Drupal.preloader.progress_done = true;
+		Drupal.preloader.progress_finished();
+	}
+	
+	if ($('body').is('front') == false)
+	{
+		$('body').append('<div id="start-scroll" style="width:10px;height:10px;position:absolute;top:0;left:0;cursor:pointer;z-index:10000;"></div>');
+		$('#start-scroll').click(function()
+		{
+			var h = $('body').height();
+			$('html,body').animate({scrollTop: h}, 80000);
+		});
+	}
+});
+
+})(jQuery);
