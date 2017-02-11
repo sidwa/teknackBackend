@@ -94,7 +94,7 @@ app.get("/logout",function(req,res){
 	req.sess.reset();
 	console.log(!req.sess.username);
 	console.log("session"+req.sess.username);
-	res.redirect("/login.html");
+	res.redirect("/home/index.html");
 	res.end();
 });
 
