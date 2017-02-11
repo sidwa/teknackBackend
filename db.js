@@ -52,9 +52,12 @@ function login(un,pass,func){     //use this for login
         assert.equal(null,err);
 
         db.collection("user").find({"username":un}).toArray(function(err,doc){
-            console.dir("verifying user for login"+doc);
+            console.dir("verifying user for login");
+	    console.log(doc);
+            console.log("*******");
             if(doc.length==1){
                 if(hash.verify(pass,doc[0].password)){
+		    console.log("success");
                     func(1);
                 }else{
                     func(0);

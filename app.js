@@ -35,7 +35,7 @@ app.use(session({
 app.use("/home",function (req, res, next) {   //check if session started
 	if (!req.sess.username){
 		console.log("redirecting cookie not found");
-		res.redirect("/login.html");
+		res.redirect("http://register.teknack.in");
 		//next();
 	} else {
 		next();
@@ -77,11 +77,12 @@ app.post("/register",function(req,res){
 
 app.post("/login",function(req,res){
       db.login(req.body.username,req.body.password,function(result){
+		console.log(result);
 		if(result==1){
 			req.sess.username=req.body.username;
-			res.send("success");
+			res.send('{"response":"success"}');
 		}else{
-			res.send(-1);
+			res.send('{"response":"login failed"}');
 		}
 		res.end();
 	});
