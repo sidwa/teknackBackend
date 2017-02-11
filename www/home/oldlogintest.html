@@ -1,0 +1,43 @@
+<html>
+	<body>
+		<h1>YOOOO</h1>
+        <form>
+			<input type="text" id="username">
+			<input type="password" id="password">
+			<input type="button" id="submit" value="gimme">
+        </form>
+		<div id="out"></div>
+	<script>
+		document.getElementById("submit").onclick=function(){
+        ajx=new XMLHttpRequest();
+			if(!ajx){
+				alert("Internet explorer not supported by this site!!!");
+			return;
+			}
+			if(ajx.readyState==4 || ajx.readyState==0){
+				var obj=new Object();
+				obj.username=document.getElementById("username").value;
+				obj.password=document.getElementById("password").value;
+				ajx.open("POST","/login",true);
+				ajx.onreadystatechange=serverResponse;
+				ajx.setRequestHeader("Content-type", "application/json");
+				console.log(JSON.stringify(obj));
+				ajx.send(JSON.stringify(obj));
+			}
+			function serverResponse(){
+				var response;
+				if(ajx.readyState==4 && ajx.status==200){
+					//response=JSON.parse(this.responseText);
+					response=this.responseText;
+					if(response=="success"){
+							document.getElementById("out").innerHTML="login done"
+					}else{
+							document.getElementById("out").innerHTML="login failed";
+					}
+
+				}
+			}
+		}
+    </script>
+	</body>
+</html>
